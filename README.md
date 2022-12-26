@@ -1,6 +1,3 @@
-# shopping-cart-ms
-This is the place for all stuff connected to the ShoppingCart Micro Service
-
 # Shoping cart microservice 🛒🛒🛒
 
 ## Main responsibilities ❔
@@ -15,68 +12,78 @@ This is the place for all stuff connected to the ShoppingCart Micro Service
 
 ```json
 {
-    id: "00000000-0000-0000-0000-000000000000"
-    customer_id: "00000000-0000-0000-0000-000000000000",
+    id: "f434c23b-cdc0-436f-832a-08541b3c3ae1",
+    customerId: "7397b6ad-279c-4fea-a530-bd1c1f2d9350",
     items: [
         {
-            product_id: "00000000-0000-0000-0000-000000000000",
-            quantity : 1
-            product_details:{
-                //product details
-            }
+            productId: "beb453ac-a070-4759-9e24-55d32c86be4b",
+            productTitle: "Mango",
+            unitPrice: 54.00,
+            quantity : 7,
         }
     ]
 }
 ```
 
 ## API 🪟
-> It will probably be changed!
+
 #### GET 
+
 ```js
  api/cart/{customerId}
  ```
  Returns shoping cart.
+
  ***Input:*** 
+
 - **customerId** 
 
  ***Output:***
 
  ```json
 {
-    id: "00000000-0000-0000-0000-000000000000"
+    id: "00000000-0000-0000-0000-000000000000",
     customer_id: "00000000-0000-0000-0000-000000000000",
     items: [
         {
-            product_id: "00000000-0000-0000-0000-000000000000",
-            quantity : 1
-            product_details:{
-                //product details
-            }
+            productId: "00000000-0000-0000-0000-000000000000",
+            quantity : 1,
+            productTitle: "",
+            unitPrice: 0.00
         }
     ]
 }
  ```
  
  #### POST 
+ 
  ```js
 api/cart/{customerId}
 ```
  Creates empty shopping carts for new users.
+
  ***Input:***
+
 - **customerId**
 
  ***Output:***
+
 - 2xx status code if was created successfully, 4xx otherwise
 
 #### DELETE 
+
 ```js
 api/cart/{customerId}
 ```
 
 Deletes empty shopping carts for the user.
+
  ***Input:***
-    - customerId
+
+    - customerIdd
+
  ***Output:***
+
 2XX status code if the cart has been deleted successfully, 4XX otherwise
 
 #### PUT
@@ -85,28 +92,34 @@ Deletes empty shopping carts for the user.
 api/cart/clear/{customerId}
 ```
 Clears shopping cart.
+
  ***Input:***
-    - **customerId**
+
+- **customerId**
+
  ***Output:***
+
 2XX status code if the cart has been cleared successfully, 4XX otherwise
 
 ```js
 api/cart/put-item/{customerId}
 ```
 Puts product to shoping cart.
+
  ***Input:***
+
  ```json
 {
-    {
-        product_id: "00000000-0000-0000-0000-000000000000",
-        quantity : 1
-        product_details:{
-            //product details
-        }
-    }
+    product_id: "00000000-0000-0000-0000-000000000000",
+    productTitle: "",
+    unitPrice: 0.00,
+    quantity : 1 
 }
  ```
+
+
  ***Output:***
+
 2XX status code if the cart has been cleared successfully, 4XX otherwise
 
 
@@ -114,11 +127,14 @@ Puts product to shoping cart.
 api/cart/remove-item/{customerId}?{productId}
 ```
 Puts product to shoping cart.
+
  ***Input:***
+
 - customerId
 - productId
 
  ***Output:***
+
 2XX status code if the cart has been cleared successfully, 4XX otherwise
 
 
