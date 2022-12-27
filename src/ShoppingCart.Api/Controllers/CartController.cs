@@ -14,10 +14,12 @@ namespace ShoppingCart.Api.Controllers
     public class CartController : ControllerBase
     {
         private readonly IShoppingCartService _cartService;
+        private readonly IMapper _mapper;
 
-        public CartController(IShoppingCartService cartService)
+        public CartController(IShoppingCartService cartService, IMapper mapper)
         {
             _cartService = cartService;
+            _mapper = mapper;
         }
 
 
@@ -27,7 +29,7 @@ namespace ShoppingCart.Api.Controllers
             var cart = await _cartService.GetCartByCustomer(customerId);
             if (cart.IsSuccess)
             {
-                var responseCart = MapToResponse(cart.Value);
+                var responseCart = _mapper.Map<CartResponse>(cart.Value);
                 return Ok(responseCart);
             }
 
@@ -46,21 +48,6 @@ namespace ShoppingCart.Api.Controllers
 
             var problemResult = Problem(statusCode: statusCode, detail: firstError.Message);
             return problemResult;
-        }
-
-        private CartResponse MapToResponse(Cart cart)
-        {
-            return new CartResponse(
-                cart.Id,
-                cart.CustomerId,
-                cart.Items.Select(
-                    item => new CartItemResponse(
-                        item.ProductId,
-                        item.UnitPrice,
-                        item.ProductTitle,
-                        item.Quantity)
-                    ).ToList()
-                );
         }
     }
 }

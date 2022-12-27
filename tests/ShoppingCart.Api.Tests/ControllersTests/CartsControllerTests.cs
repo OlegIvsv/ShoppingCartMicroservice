@@ -28,7 +28,7 @@ public class CartsControllerTests
         Cart cart = new Cart(customerId);
         _serviceMock.Setup(cs => cs.GetCartByCustomer(customerId))
             .ReturnsAsync(cart);
-        var controller = new CartController(_serviceMock.Object);
+        var controller = new CartController(_serviceMock.Object, MapsterForTests.GetMapper());
 
         //Act
         var result = await controller.GetShoppingCartByCustomerId(customerId);
@@ -46,7 +46,7 @@ public class CartsControllerTests
         int customerId = 1;
         _serviceMock.Setup(cs => cs.GetCartByCustomer(customerId))
             .ReturnsAsync(Result.Fail(new CartDoesNotExistsError(customerId)));
-        var controller = new CartController(_serviceMock.Object);
+        var controller = new CartController(_serviceMock.Object, MapsterForTests.GetMapper());
 
         //Act
         var result = await controller.GetShoppingCartByCustomerId(customerId);

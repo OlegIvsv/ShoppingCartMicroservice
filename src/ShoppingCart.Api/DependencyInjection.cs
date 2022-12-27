@@ -7,6 +7,7 @@ namespace ShoppingCart.Api
         public static IServiceCollection AddApiPresentation(this IServiceCollection services)
         {
             services.AddControllers();
+            services.AddMapsterMapping();
 
             return services;
         }
