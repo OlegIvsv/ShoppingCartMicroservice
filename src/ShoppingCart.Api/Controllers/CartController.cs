@@ -36,6 +36,17 @@ namespace ShoppingCart.Api.Controllers
             return Problem(cart.Errors);
         }
 
+        [HttpPost("customerId")]
+        public async Task<IActionResult> CreateShoppingCart(int customerId)
+        {
+            var result = await _cartService.CreateCart(customerId);
+
+            if (result.IsSuccess)
+                return CreatedAtAction(nameof(CreateShoppingCart), result.Value);
+
+            return Problem(result.Errors);
+        }
+
         private IActionResult Problem(IList<IError> errors)
         {
             var firstError = errors.First();
@@ -43,6 +54,7 @@ namespace ShoppingCart.Api.Controllers
             var statusCode = firstError switch
             {
                 CartDoesNotExistsError => StatusCodes.Status404NotFound,
+                CartAlreadyExistsError => StatusCodes.Status409Conflict,
                 _ => StatusCodes.Status500InternalServerError
             };
 

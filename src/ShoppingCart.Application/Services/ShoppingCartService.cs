@@ -27,5 +27,16 @@ namespace ShoppingCart.Application.Services
 
             return cart;
         }
+
+        public async Task<Result<Cart>> CreateCart(int customerId)
+        {
+            var cart = await _cartRepository.FindByCustomer(customerId);
+            if (cart is not null)
+                return Result.Fail(new CartAlreadyExistsError(customerId));
+
+            var newCart = new Cart(customerId);
+            return await _cartRepository.Add(newCart);
+        }
+
     }
 }
