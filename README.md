@@ -12,14 +12,14 @@
 
 ```json
 {
-    id: "f434c23b-cdc0-436f-832a-08541b3c3ae1",
-    customerId: "7397b6ad-279c-4fea-a530-bd1c1f2d9350",
-    items: [
+    "id": "f434c23b-cdc0-436f-832a-08541b3c3ae1",
+    "customerId": "7397b6ad-279c-4fea-a530-bd1c1f2d9350",
+    "items": [
         {
-            productId: "beb453ac-a070-4759-9e24-55d32c86be4b",
-            productTitle: "Mango",
-            unitPrice: 54.00,
-            quantity : 7,
+            "productId": "beb453ac-a070-4759-9e24-55d32c86be4b",
+            "productTitle": "Mango",
+            "unitPrice": 54.00,
+            "quantity" : 7,
         }
     ]
 }
@@ -42,14 +42,14 @@
 
  ```json
 {
-    id: "00000000-0000-0000-0000-000000000000",
-    customer_id: "00000000-0000-0000-0000-000000000000",
-    items: [
+    "id": "00000000-0000-0000-0000-000000000000",
+    "customerId": "00000000-0000-0000-0000-000000000000",
+    "items": [
         {
-            productId: "00000000-0000-0000-0000-000000000000",
-            quantity : 1,
-            productTitle: "",
-            unitPrice: 0.00
+            "productId": "00000000-0000-0000-0000-000000000000",
+            "quantity": 1,
+            "productTitle": "",
+            "unitPrice": 0.00
         }
     ]
 }
@@ -110,10 +110,10 @@ Puts product to shoping cart.
 
  ```json
 {
-    product_id: "00000000-0000-0000-0000-000000000000",
-    productTitle: "",
-    unitPrice: 0.00,
-    quantity : 1 
+    "productId": "00000000-0000-0000-0000-000000000000",
+    "productTitle": "",
+    "unitPrice": 0.00,
+    "quantity" : 1 
 }
  ```
 
