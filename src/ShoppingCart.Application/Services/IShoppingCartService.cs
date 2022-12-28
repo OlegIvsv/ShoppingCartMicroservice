@@ -11,5 +11,6 @@ namespace ShoppingCart.Application.Services
     public interface IShoppingCartService
     {
         Task<Result<Cart>> GetCartByCustomer(int customerId);
+        Task<Result<Cart>> CreateCart(int customerId);
     }
 }

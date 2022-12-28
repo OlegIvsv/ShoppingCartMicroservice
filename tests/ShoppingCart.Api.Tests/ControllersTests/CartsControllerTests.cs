@@ -21,7 +21,7 @@ public class CartsControllerTests
     }
 
     [Fact]
-    public async Task GetShoppingCartByCustomerId_ExistingCartId_ReturnsOk()
+    public async Task GetShoppingCartByCustomerId_ExistingCartId_Returns200()
     {
         //Arrange
         int customerId = 1;
@@ -55,6 +55,41 @@ public class CartsControllerTests
         var objectResult = Assert.IsType<ObjectResult>(result);
         var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
         Assert.Equal(problemDetails.Status, StatusCodes.Status404NotFound);
+    }
+
+    [Fact]
+    public async Task GetShoppingCartByCustomerId_NewCart_Returns201()
+    {
+        //Arrange
+        int customerId = 1;
+        _serviceMock.Setup(cs => cs.CreateCart(customerId))
+            .ReturnsAsync(new Cart(customerId));
+        var controller = new CartController(_serviceMock.Object, MapsterForTests.GetMapper());
+
+        //Act
+        var result = await controller.CreateShoppingCart(customerId);
+
+        //Assert
+        var createdResult = Assert.IsType<CreatedAtActionResult>(result);
+        var problemDetails = Assert.IsType<Cart>(createdResult.Value);
+    }
+
+    [Fact]
+    public async Task CreateShoppingCart_CartForThisCustomerAlredyExists_Returns409()
+    {
+        //Arrange
+        int customerId = 1;
+        _serviceMock.Setup(cs => cs.CreateCart(customerId))
+            .ReturnsAsync(Result.Fail(new CartAlreadyExistsError(customerId)));
+        var controller = new CartController(_serviceMock.Object, MapsterForTests.GetMapper());
+
+        //Act
+        var result = await controller.CreateShoppingCart(customerId);
+
+        //Assert
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        var problemDetails = Assert.IsType<ProblemDetails>(objectResult.Value);
+        Assert.Equal(problemDetails.Status, StatusCodes.Status409Conflict);
     }
 }
 

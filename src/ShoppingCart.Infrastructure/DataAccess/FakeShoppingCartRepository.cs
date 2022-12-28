@@ -37,11 +37,23 @@ namespace ShoppingCart.Infrastructure.DataAccess
                     })
             };
         }
+
         public async Task<Cart?> FindByCustomer(int customerId)
         {
             return _carts
                 .Where(cart =>  cart.CustomerId== customerId)
                 .FirstOrDefault();
+        }
+
+        public async Task<Cart> Add(Cart cart)
+        {
+            var newCart = new Cart(
+                Guid.NewGuid().ToString(), 
+                cart.CustomerId, 
+                cart.Items.ToList());
+
+            _carts.Add(newCart);
+            return newCart;
         }
     }
 }
