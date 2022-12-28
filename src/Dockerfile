@@ -5,13 +5,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ./ShoppingCart.sln ./
+# COPY ./ShoppingCart.sln ./
 COPY ["ShoppingCart.Application/*.csproj", "./ShoppingCart.Application/"]
 COPY ["ShoppingCart.Domain/*.csproj", "./ShoppingCart.Domain/"]
 COPY ["ShoppingCart.Infrastructure/*.csproj", "./ShoppingCart.Infrastructure/"]
 COPY ["ShoppingCart.Api/*.csproj", "./ShoppingCart.Api/"]
 
-RUN dotnet restore
+RUN dotnet restore "./ShoppingCart.Application/"
+RUN dotnet restore "./ShoppingCart.Application/"
+RUN dotnet restore "./ShoppingCart.Infrastructure/"
+RUN dotnet restore "./ShoppingCart.Api/"
+
 COPY . .
 
 WORKDIR "/src/ShoppingCart.Domain"
