@@ -16,6 +16,7 @@ namespace ShoppingCart.Api.Controllers
         private readonly IShoppingCartService _cartService;
         private readonly IMapper _mapper;
 
+
         public CartController(IShoppingCartService cartService, IMapper mapper)
         {
             _cartService = cartService;
@@ -39,12 +40,15 @@ namespace ShoppingCart.Api.Controllers
         [HttpPost("customerId")]
         public async Task<IActionResult> CreateShoppingCart(int customerId)
         {
-            var result = await _cartService.CreateCart(customerId);
+            var createResult = await _cartService.CreateCart(customerId);
+           
+            if (createResult.IsSuccess)
+            {
+                var response = _mapper.Map<CartResponse>(createResult.Value);
+                return CreatedAtAction(nameof(CreateShoppingCart), response);
+            }
 
-            if (result.IsSuccess)
-                return CreatedAtAction(nameof(CreateShoppingCart), result.Value);
-
-            return Problem(result.Errors);
+            return Problem(createResult.Errors);
         }
 
         private IActionResult Problem(IList<IError> errors)
