@@ -20,9 +20,9 @@ namespace ShoppingCart.Infrastructure.DataAccess
                     customerId : 1,
                     items : new List<CartItem>()
                     {
-                        CartItem.Create(productId: 134, productTitle: "Prod_1",
+                        new CartItem(productId: 134, productTitle: "Prod_1",
                             unitPrice: 450, quantity: 2),
-                        CartItem.Create(productId: 135, productTitle: "Prod_2",
+                         new CartItem(productId: 135, productTitle: "Prod_2",
                             unitPrice: 310, quantity: 1)
                     }),
                new Cart(
@@ -30,9 +30,9 @@ namespace ShoppingCart.Infrastructure.DataAccess
                     customerId : 2,
                     items : new List<CartItem>()
                     {
-                         CartItem.Create(productId: 145, productTitle: "Prod_3",
+                          new CartItem(productId: 145, productTitle: "Prod_3",
                             unitPrice: 50, quantity: 7),
-                         CartItem.Create(productId: 11, productTitle: "Prod_4",
+                          new CartItem(productId: 11, productTitle: "Prod_4",
                             unitPrice: 105, quantity: 1)
                     })
             };

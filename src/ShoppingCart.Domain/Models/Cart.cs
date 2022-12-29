@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShoppingCart.Domain.Errors;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,8 +12,8 @@ namespace ShoppingCart.Domain.Models
     {
         private List<CartItem> _items;
 
-        public string Id { get; private set; }
-        public int CustomerId { get; private set; }
+        public string Id { get; private init; }
+        public int CustomerId { get; private init; }
         public IReadOnlyList<CartItem> Items => _items;
 
 
@@ -32,26 +33,25 @@ namespace ShoppingCart.Domain.Models
 
         public bool PutItem(CartItem item)
         {
-            int indexOfItem = _items.FindIndex(i => i.ProductId == item.ProductId);
-            if (indexOfItem >= 0)
+            var itemInCart = _items.Find(i => i.ProductId == item.ProductId);
+
+            if (itemInCart is not null)
             {
-                _items.RemoveAt(indexOfItem);
-                _items.Insert(indexOfItem, item);
+                itemInCart.SetQuantity(item.Quantity);
                 return false;
             }
+
             _items.Add(item);
             return true;
         }
 
-        public bool RemoveItem(int productId)
+        public void RemoveItem(int productId)
         {
             int indexOfItem = _items.FindIndex(item => productId == item.ProductId);
-            if (indexOfItem >= 0)
-            {
-                _items.RemoveAt(indexOfItem);
-                return true;
-            }
-            return false;
+            if (indexOfItem < 0)
+                throw new CartErrors.CartDoesNotContainItemException();
+            
+            _items.RemoveAt(indexOfItem);
         }
 
         public void Clear()
