@@ -1,42 +1,38 @@
-﻿using ShoppingCart.Domain.Models;
+﻿using ShoppingCart.Domain.Errors;
+using ShoppingCart.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using Xunit;
 
 namespace ShoppingCart.Domain.Tests.ModelsTests;
 public class CartItemTests
 {
-    [Theory]
-    [InlineData(0.00)]
-    [InlineData(-1.00)]
-    public void Create_InvalidPrice_ThrowsException(decimal price)
+    [Fact]
+    public void SetQuantity_ValidValue_QuantityChanges()
     {
+        //Arrange
+        var item = new CartItem(1, "Test Product", 10.00m, 10);
+        int newQuantity = 5;
+        
         //Act
-        var action = () => CartItem.Create(1, "Test Product", price, 1);
+        item.SetQuantity(newQuantity);
+
         //Assert
-        Assert.Throws<ValidationException>(action);
+        Assert.Equal(newQuantity, item.Quantity);
     }
 
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void Create_InvalidTitle_ThrowsException(string productTitle)
+    [Fact]
+    public void SetQuantity_InvalidValue_QuantityChanges()
     {
-        //Act
-        var action = () => CartItem.Create(1, productTitle, 1.00m, 1);
-        //Assert
-        Assert.Throws<ValidationException>(action);
-    }
+        //Arrange
+        var item = new CartItem(1, "Test Product", 10.00m, 10);
 
-    [Theory]
-    [InlineData(0)]
-    [InlineData(-1)]
-    public void Create_InvalidQuantity_ThrowsException(int quantity)
-    {
         //Act
-        var action = () => CartItem.Create(1, "Test Product", 1.00m, quantity);
+        var action = () => item.SetQuantity(-1);
+
         //Assert
-        Assert.Throws<ValidationException>(action);
+        Assert.ThrowsAny<CartItemErrors.QuantityException>(action);
     }
 }
 

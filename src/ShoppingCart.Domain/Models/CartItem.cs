@@ -1,4 +1,7 @@
-﻿using System;
+﻿using FluentResults;
+using ShoppingCart.Domain.Errors;
+using ShoppingCart.Domain.Validators;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,29 +12,27 @@ namespace ShoppingCart.Domain.Models
 {
     public sealed class CartItem
     {
-        public int ProductId { get; init; }
-        public string ProductTitle { get; init; }
-        public decimal UnitPrice { get; init; }
-        public int Quantity { get; init; }
-
-        private CartItem(int productId, string productTitle, decimal unitPrice, int quantity)
+        public Guid Id { get; private init; }
+        public int ProductId { get; private init; }
+        public string ProductTitle { get; private init; }
+        public decimal UnitPrice { get; private init; }
+        public int Quantity { get; private set; }
+         
+        public CartItem(int productId, string productTitle, decimal unitPrice, int quantity)
         {
             ProductId = productId;
             ProductTitle = productTitle;
             UnitPrice = unitPrice;
             Quantity = quantity;
+            Id = Guid.NewGuid();
+
+            CartItemValidator.IsValidItem(this);
         }
 
-        public static CartItem Create(int productId, string productTitle, decimal unitPrice, int quantity)
+        public void SetQuantity(int quantity)
         {
-            if (unitPrice <= 0)
-                throw new ValidationException("Invalid unit price!");
-            if (string.IsNullOrWhiteSpace(productTitle))
-                throw new ValidationException("Invalid product title!");
-            if (quantity < 1)
-                throw new ValidationException("Invalid product title!");
-
-            return new(productId, productTitle, unitPrice, quantity);
+            CartItemValidator.IsValidQuantity(quantity);
+            Quantity = quantity;
         }
     }
 }
