@@ -71,7 +71,7 @@ public class CartsControllerTests
 
         //Assert
         var createdResult = Assert.IsType<CreatedAtActionResult>(result);
-        var problemDetails = Assert.IsType<Cart>(createdResult.Value);
+        var problemDetails = Assert.IsType<CartResponse>(createdResult.Value);
     }
 
     [Fact]
