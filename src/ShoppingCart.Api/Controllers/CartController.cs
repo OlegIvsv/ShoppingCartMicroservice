@@ -10,6 +10,35 @@ namespace ShoppingCart.Api.Controllers
     [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
+        private readonly IShoppingCartRepository _repository;
+
+        public CartController(IShoppingCartRepository cartRepository)
+        {
+            _repository = cartRepository;
+        }
+
+
+        [HttpPost("customerId")]
+        [ProducesResponseType(typeof(CartResponse), 201)]
+        [ProducesResponseType(409)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> CreateShoppingCart(Guid customerId)
+        {
+            var cartInRepo = await _repository.FindByCustomer(customerId);
+            if (cartInRepo is not null)
+                return Conflict();
+
+            var cart = Cart.Create(customerId);
+            if (cart.IsFailed)
+                return BadRequest();
+
+            await _repository.Add(cart.Value);
+            return CreatedAtAction(
+                nameof(CreateShoppingCart),
+                MapResponse(cart.Value));
+        }
+
+
         private CartItem? MapRequest(CartItemRequest request)
         {
             var title = ProductTitle.Create(request.ProductTitle);
