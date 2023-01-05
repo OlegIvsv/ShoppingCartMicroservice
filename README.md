@@ -13,24 +13,30 @@
 ```json
 {
     "id": "f434c23b-cdc0-436f-832a-08541b3c3ae1",
-    "customerId": "7397b6ad-279c-4fea-a530-bd1c1f2d9350",
     "items": [
         {
-            "productId": "beb453ac-a070-4759-9e24-55d32c86be4b",
+            "id": "a90da8ee-af2a-4d8e-863c-d384c82650ea",
+            "productId": "df473118-8878-443d-b8a0-864e612d593a",
             "productTitle": "Mango",
             "unitPrice": 54.00,
+            "discount": 0.05,
             "quantity" : 7,
         }
     ]
 }
 ```
 
+
+
 ## API 🪟
 
-#### GET 
+
+
+
+####  🔑 Get shopping cart by customer id
 
 ```js
- api/cart/{customerId}
+ GET api/cart/{customerId}
  ```
  Returns shoping cart.
 
@@ -46,19 +52,24 @@
     "customerId": "00000000-0000-0000-0000-000000000000",
     "items": [
         {
+             "id": "00000000-0000-0000-0000-000000000000",
             "productId": "00000000-0000-0000-0000-000000000000",
             "quantity": 1,
-            "productTitle": "",
-            "unitPrice": 0.00
+            "productTitle": "text",
+            "unitPrice": 0.00,
+            "discount": 0.00
         }
     ]
 }
  ```
  
- #### POST 
+
+
+
+ #### 🔑 Create a new shopping cart
  
  ```js
-api/cart/{customerId}
+POST api/cart/{customerId}
 ```
  Creates empty shopping carts for new users.
 
@@ -70,10 +81,13 @@ api/cart/{customerId}
 
 - 2xx status code if was created successfully, 4xx otherwise
 
-#### DELETE 
+
+
+
+#### 🔑 Delete an existing shopping cart 
 
 ```js
-api/cart/{customerId}
+DELETE api/cart/{customerId}
 ```
 
 Deletes empty shopping carts for the user.
@@ -86,10 +100,12 @@ Deletes empty shopping carts for the user.
 
 2XX status code if the cart has been deleted successfully, 4XX otherwise
 
-#### PUT
+
+
+#### 🔑 Clear shopping cart
 
 ```js 
-api/cart/clear/{customerId}
+PUT api/cart/clear/{customerId}
 ```
 Clears shopping cart.
 
@@ -101,32 +117,65 @@ Clears shopping cart.
 
 2XX status code if the cart has been cleared successfully, 4XX otherwise
 
+
+
+#### 🔑 Put item to shopping cart
+
 ```js
-api/cart/put-item/{customerId}
+PUT api/cart/put-item/{customerId}
 ```
-Puts product to shoping cart.
+Puts product to shoping cart. If there is an item for this product in the cart, quantity will be added up. Otherwise, the product will just be added to the cart.
 
  ***Input:***
 
  ```json
-{
+ {
+    "id": "00000000-0000-0000-0000-000000000000",
     "productId": "00000000-0000-0000-0000-000000000000",
-    "productTitle": "",
+    "quantity": 1,
+    "productTitle": "text",
     "unitPrice": 0.00,
-    "quantity" : 1 
+    "discount": 0.00
 }
  ```
-
-
  ***Output:***
 
 2XX status code if the cart has been cleared successfully, 4XX otherwise
 
 
+
+#### 🔑 Update item in shopping cart
+
+```js
+PUT api/cart/update-item/{customerId}
+```
+Updates product quantity or adds the product to the customer's shopping cart if the cart doesn't contain it.
+
+ ***Input:***
+
+ ```json
+ {
+    "id": "00000000-0000-0000-0000-000000000000",
+    "productId": "00000000-0000-0000-0000-000000000000",
+    "quantity": 1,
+    "productTitle": "text",
+    "unitPrice": 0.00,
+    "discount": 0.00
+}
+ ```
+ 
+ ***Output:***
+
+2XX status code if the cart has been cleared successfully, 4XX otherwise
+
+
+
+#### 🔑 Remove item from shopping cart
+
 ```js
 api/cart/remove-item/{customerId}?{productId}
 ```
-Puts product to shoping cart.
+Removes item from shopping cart.
 
  ***Input:***
 
