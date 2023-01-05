@@ -4,7 +4,10 @@ namespace ShoppingCart.Infrastructure.DataAccess
 {
     public interface IShoppingCartRepository
     {
-        Task<Cart?> FindByCustomer(int customerId);
-        Task<Cart> Add(Cart cart);
+        Task Add(Cart cart);
+        Task<Cart?> FindByCustomer(Guid customerId);
+        Task<IEnumerable<Cart>> All();
+        Task<bool> Delete(Guid customerId);
+        Task Update(Cart cart);
     }
 }
