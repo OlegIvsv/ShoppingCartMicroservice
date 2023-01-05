@@ -79,6 +79,28 @@ namespace ShoppingCart.Api.Controllers
         }
 
 
+        [HttpPut("put-item/{customerId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> PutItemToCart(Guid customerId, [FromBody] CartItemRequest request)
+        {
+            var item = MapRequest(request);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var cart = await _repository.FindByCustomer(customerId);
+            if (cart is null)
+                return NotFound();
+
+            cart.PutItem(item);
+            await _repository.Update(cart);
+
+            return Ok();
+        }
+        
+
         private CartItem? MapRequest(CartItemRequest request)
         {
             var title = ProductTitle.Create(request.ProductTitle);
