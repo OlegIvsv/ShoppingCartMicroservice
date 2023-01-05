@@ -64,6 +64,20 @@ namespace ShoppingCart.Api.Controllers
             return Ok();
         }
 
+        [HttpPut("clear/{customerId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> ClearShoppingCart(Guid customerId)
+        {
+            var cart = await _repository.FindByCustomer(customerId);
+            if (cart is null)
+                return NotFound();
+
+            cart.Clear();
+            await _repository.Update(cart);
+            return Ok();
+        }
+
 
         private CartItem? MapRequest(CartItemRequest request)
         {
