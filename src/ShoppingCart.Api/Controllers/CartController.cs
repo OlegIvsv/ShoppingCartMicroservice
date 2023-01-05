@@ -78,7 +78,6 @@ namespace ShoppingCart.Api.Controllers
             return Ok();
         }
 
-
         [HttpPut("put-item/{customerId}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -99,8 +98,28 @@ namespace ShoppingCart.Api.Controllers
 
             return Ok();
         }
-        
 
+        [HttpPut("update-item/{customerId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> UpdateItemInCart(Guid customerId, [FromBody] CartItemRequest request)
+        {
+            var item = MapRequest(request);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var cart = await _repository.FindByCustomer(customerId);
+            if (cart is null)
+                return NotFound();
+
+            cart.UpdateItem(item);
+            await _repository.Update(cart);
+
+            return Ok();
+        }
+
+      
         private CartItem? MapRequest(CartItemRequest request)
         {
             var title = ProductTitle.Create(request.ProductTitle);
