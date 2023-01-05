@@ -119,7 +119,23 @@ namespace ShoppingCart.Api.Controllers
             return Ok();
         }
 
-      
+        [HttpPut("remove-item/{customerId}")]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> RemoveItemFromCart(Guid customerId, [FromQuery] Guid productId)
+        {
+            var cart = await _repository.FindByCustomer(customerId);
+            if (cart is null)
+                return NotFound();
+
+            bool deleted = cart.RemoveItem(productId);
+            if (deleted)
+                await _repository.Update(cart);
+
+            return Ok();
+        }
+
+
         private CartItem? MapRequest(CartItemRequest request)
         {
             var title = ProductTitle.Create(request.ProductTitle);
