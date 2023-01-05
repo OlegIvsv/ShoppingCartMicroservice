@@ -3,7 +3,6 @@
 namespace ShoppingCart.Api.Contracts
 {
     public record CartResponse(
-        string Id,
-        int CustomerId,
-        IList<CartItemResponse> Items);   
+        Guid CustomerId,
+        IEnumerable<CartItemResponse> Items);
 }

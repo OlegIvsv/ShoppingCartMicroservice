@@ -1,11 +1,8 @@
-﻿using FluentResults;
-using MapsterMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
-using ShoppingCart.Application.Errors;
-using ShoppingCart.Application.Services;
 using ShoppingCart.Domain.Models;
+using ShoppingCart.Domain.ValueObjects;
+using ShoppingCart.Infrastructure.DataAccess;
 
 namespace ShoppingCart.Api.Controllers
 {
@@ -13,57 +10,57 @@ namespace ShoppingCart.Api.Controllers
     [Route("api/[controller]")]
     public class CartController : ControllerBase
     {
-        private readonly IShoppingCartService _cartService;
-        private readonly IMapper _mapper;
-
-
-        public CartController(IShoppingCartService cartService, IMapper mapper)
+        private CartItem? MapRequest(CartItemRequest request)
         {
-            _cartService = cartService;
-            _mapper = mapper;
-        }
+            var title = ProductTitle.Create(request.ProductTitle);
+            var quantity = Quantity.Create(request.Quantity);
+            var unitPrice = Money.Create(request.UnitPrice);
+            var discount = Discount.Create(request.Discount);
 
+            if (title.IsFailed)
+                ModelState.AddModelError("ProductTitle", title.Errors.First().Message);
+            if (quantity.IsFailed)
+                ModelState.AddModelError("Quantity", title.Errors.First().Message);
+            if (unitPrice.IsFailed)
+                ModelState.AddModelError("UnitPrice", title.Errors.First().Message);
+            if (discount.IsFailed)
+                ModelState.AddModelError("Discount", title.Errors.First().Message);
 
-        [HttpGet("{customerId}")]
-        public async Task<IActionResult> GetShoppingCartByCustomerId(int customerId)
-        {
-            var cart = await _cartService.GetCartByCustomer(customerId);
-            if (cart.IsSuccess)
+            if (ModelState.ErrorCount != 0)
+                return null;
+
+            var item = CartItem.Create(
+                request.ProductId,
+                title.Value,
+                quantity.Value,
+                unitPrice.Value,
+                discount.Value);
+
+            if (item.IsFailed)
             {
-                var responseCart = _mapper.Map<CartResponse>(cart.Value);
-                return Ok(responseCart);
+                ModelState.AddModelError("CartItem", item.Errors.First().Message);
+                return null;
             }
 
-            return Problem(cart.Errors);
+            return item.Value;
         }
 
-        [HttpPost("customerId")]
-        public async Task<IActionResult> CreateShoppingCart(int customerId)
+        private CartItemResponse MapResponse(CartItem item)
         {
-            var createResult = await _cartService.CreateCart(customerId);
-           
-            if (createResult.IsSuccess)
-            {
-                var response = _mapper.Map<CartResponse>(createResult.Value);
-                return CreatedAtAction(nameof(CreateShoppingCart), response);
-            }
-
-            return Problem(createResult.Errors);
+            return new CartItemResponse(
+                item.Id,
+                item.ProductId,
+                item.UnitPrice.Value,
+                item.ProductTitle.Value,
+                item.Quantity.Value,
+                item.Discount.Value);
         }
 
-        private IActionResult Problem(IList<IError> errors)
+        private CartResponse MapResponse(Cart cart)
         {
-            var firstError = errors.First();
-
-            var statusCode = firstError switch
-            {
-                CartDoesNotExistsError => StatusCodes.Status404NotFound,
-                CartAlreadyExistsError => StatusCodes.Status409Conflict,
-                _ => StatusCodes.Status500InternalServerError
-            };
-
-            var problemResult = Problem(statusCode: statusCode, detail: firstError.Message);
-            return problemResult;
+            return new CartResponse(
+                cart.Id,
+                cart.Items.Select(item => MapResponse(item)).ToArray());
         }
     }
 }
