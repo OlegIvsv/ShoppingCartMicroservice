@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.IdGenerators;
-using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using ShoppingCart.Domain.Models;
-using System;
+using ShoppingCart.Domain.ValueObjects;
+using ShoppingCart.Infrastructure.DataAccess.MongoDb.BsonMapping;
+using ShoppingCart.Infrastructure.DataAccess.MongoDb.Serrializers;
 
 namespace ShoppingCart.Infrastructure.DataAccess
 {
@@ -15,55 +14,56 @@ namespace ShoppingCart.Infrastructure.DataAccess
         private IMongoDatabase _shopDb;
         private IMongoCollection<Cart> _cartsCollection;
 
+
         public MongoShoppingCartRepository(IOptions<MongoSettings> settings)
         {
-            string connectionString = settings.Value.ConnectionString;
-            string dbName = settings.Value.Database;
-            string cartsCollectionName = settings.Value.ShoppingCartsCollection;
-
-            _client = new MongoClient(connectionString);
-            _shopDb = _client.GetDatabase(dbName);
-            _cartsCollection = _shopDb.GetCollection<Cart>(cartsCollectionName);
+            _client = new MongoClient(settings.Value.ConnectionString);
+            _shopDb = _client.GetDatabase(settings.Value.Database);
+            _cartsCollection = _shopDb.GetCollection<Cart>(settings.Value.ShoppingCartsCollection);
         }
 
         static MongoShoppingCartRepository()
         {
-            BsonClassMap.RegisterClassMap<CartItem>(initializer =>
-            {
-                initializer.MapProperty(item => item.ProductId)
-                    .SetElementName("productId");
-                initializer.MapField(item => item.ProductTitle)
-                    .SetElementName("productTitle");
-                initializer.MapField(item => item.UnitPrice)
-                    .SetElementName("unitPrice");
-                initializer.MapField(item => item.Quantity)
-                    .SetElementName("quantity");
-            });
+            BsonSerializer.RegisterSerializer<Money>(new MoneySerrializer());
+            BsonSerializer.RegisterSerializer<Quantity>(new QuantitySerrializer());
+            BsonSerializer.RegisterSerializer<Discount>(new DiscountSerrializer());
+            BsonSerializer.RegisterSerializer<ProductTitle>(new ProductTitleSerrializer());
+            BsonSerializer.RegisterSerializer<Dictionary<Guid, CartItem>>(new CartItemsSerrializer());
 
-            BsonClassMap.RegisterClassMap<Cart>(initializer =>
-            {
-                initializer.MapProperty(cart => cart.CustomerId)
-                    .SetElementName("customerId");
-                initializer.MapField("_items")
-                    .SetElementName("items");
-                initializer.MapIdProperty(c => c.Id)
-                   .SetIdGenerator(new StringObjectIdGenerator())
-                   .SetSerializer(new StringSerializer(BsonType.ObjectId));
-            });
+            new CartItemMapping().RegisterMap();
+            new CartMapping().RegisterMap();
         }
 
-        public async Task<Cart> Add(Cart cart)
+
+        public async Task Add(Cart cart)
         {
             await _cartsCollection.InsertOneAsync(cart);
+        }
+
+        public async Task<Cart?> FindByCustomer(Guid customerId)
+        {
+            var cart = await _cartsCollection
+                .Find(cart => cart.Id == customerId)
+                .FirstOrDefaultAsync();
             return cart;
         }
 
-        public async Task<Cart?> FindByCustomer(int customerId)
+        public async Task Update(Cart cart)
         {
-            var cart = await _cartsCollection
-                .Find(cart => cart.CustomerId == customerId)
-                .FirstOrDefaultAsync();
-            return cart;
+            await _cartsCollection.ReplaceOneAsync(c => c.Id == cart.Id, cart);
+        }
+
+        public async Task<IEnumerable<Cart>> All()
+        {
+            return await _cartsCollection
+                .Find(_ => true)
+                .ToListAsync();
+        }
+
+        public async Task<bool> Delete(Guid customerId)
+        {
+            var deleteResult = await _cartsCollection.DeleteOneAsync(cart => cart.Id == customerId);
+            return deleteResult.DeletedCount > 0;
         }
     }
 }

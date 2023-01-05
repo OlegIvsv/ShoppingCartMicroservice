@@ -9,7 +9,7 @@ namespace ShoppingCart.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, ConfigurationManager configurationManager)
         {
-            services.AddScoped<IShoppingCartRepository, FakeShoppingCartRepository>();
+            services.AddScoped<IShoppingCartRepository, MongoShoppingCartRepository>();
 
             var mongoSettings = new MongoSettings();
             configurationManager.Bind(MongoSettings.SectionName, mongoSettings);
