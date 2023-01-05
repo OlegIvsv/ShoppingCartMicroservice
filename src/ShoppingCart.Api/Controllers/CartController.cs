@@ -38,6 +38,20 @@ namespace ShoppingCart.Api.Controllers
                 MapResponse(cart.Value));
         }
 
+        [HttpGet("{customerId}")]
+        [ProducesResponseType(typeof(CartResponse), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> GetShoppingCart(Guid customerId)
+        {
+            var cart = await _repository.FindByCustomer(customerId);
+            if (cart is null)
+                return NotFound();
+
+            var responseCart = MapResponse(cart);
+            return Ok(responseCart);
+        }
+
+       
 
         private CartItem? MapRequest(CartItemRequest request)
         {
