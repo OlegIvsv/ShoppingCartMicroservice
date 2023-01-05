@@ -51,7 +51,19 @@ namespace ShoppingCart.Api.Controllers
             return Ok(responseCart);
         }
 
-       
+        [HttpDelete("{customerId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteShoppingCart(Guid customerId)
+        {
+            bool deleted = await _repository.Delete(customerId);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok();
+        }
+
 
         private CartItem? MapRequest(CartItemRequest request)
         {
