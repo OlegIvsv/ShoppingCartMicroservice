@@ -43,6 +43,9 @@ namespace ShoppingCart.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetShoppingCart(Guid customerId)
         {
+            if (customerId == Guid.Empty)
+                return BadRequest();
+
             var cart = await _repository.FindByCustomer(customerId);
             if (cart is null)
                 return NotFound();
@@ -56,8 +59,10 @@ namespace ShoppingCart.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteShoppingCart(Guid customerId)
         {
-            bool deleted = await _repository.Delete(customerId);
+            if (customerId == Guid.Empty)
+                return BadRequest();
 
+            bool deleted = await _repository.Delete(customerId);
             if (!deleted)
                 return NotFound();
 
@@ -69,6 +74,9 @@ namespace ShoppingCart.Api.Controllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> ClearShoppingCart(Guid customerId)
         {
+            if (customerId == Guid.Empty)
+                return BadRequest();
+
             var cart = await _repository.FindByCustomer(customerId);
             if (cart is null)
                 return NotFound();
