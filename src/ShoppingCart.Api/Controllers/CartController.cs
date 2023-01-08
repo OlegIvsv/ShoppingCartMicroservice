@@ -18,7 +18,7 @@ namespace ShoppingCart.Api.Controllers
         }
 
 
-        [HttpPost("customerId")]
+        [HttpPost("{customerId}")]
         [ProducesResponseType(typeof(CartResponse), 201)]
         [ProducesResponseType(409)]
         [ProducesResponseType(400)]
