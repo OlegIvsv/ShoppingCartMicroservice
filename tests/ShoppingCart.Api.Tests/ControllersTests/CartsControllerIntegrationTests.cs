@@ -139,6 +139,44 @@ public class CartsControllerIntegrationTests : IDisposable
     }
 
 
+    [Fact]
+    public async Task DeleteShoppingCart_CartExists_ReturnsOk()
+    {
+        //Arrange
+        var cartsInDb = await PrepareDatabase();
+        Guid cartId = cartsInDb.Last().Id;
+        //Act
+        var response = await _client.DeleteAsync($"api/cart/{cartId}");
+        //Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeleteShoppingCart_CartDoesNotExist_NotFound()
+    {
+        //Arrange
+        await PrepareDatabase();
+        Guid randomId = Guid.NewGuid();
+        //Act
+        var response = await _client.DeleteAsync($"api/cart/{randomId}");
+        //Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("application/problem+json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    }
+
+    [Fact]
+    public async Task DeleteShoppingCart_InvalidId_ReturnsBadRequest()
+    {
+        //Arrange
+        await PrepareDatabase();
+        //Act
+        var response = await _client.DeleteAsync($"api/cart/{Guid.Empty}");
+        //Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal("application/problem+json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    }
+
+
     private async Task<List<Cart>> PrepareDatabase()
     {
         var testCarts = new List<Cart>
