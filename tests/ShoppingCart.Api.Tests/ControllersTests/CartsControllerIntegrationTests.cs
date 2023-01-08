@@ -177,6 +177,46 @@ public class CartsControllerIntegrationTests : IDisposable
     }
 
 
+    [Fact]
+    public async Task ClearShoppingCart_CartExists_ReturnsOk()
+    {
+        //Arrange
+        var cartsInDb = await PrepareDatabase();
+        Guid cartId = cartsInDb.First().Id;
+        //Act
+        var response = await _client.PutAsync($"api/cart/clear/{cartId}", null);
+        //Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
+        Assert.Equal(0, cart.Items.Count);
+    }
+
+    [Fact]
+    public async Task ClearShoppingCart_CartDoesNotExist_NotFound()
+    {
+        //Arrange
+        await PrepareDatabase();
+        Guid randomId = Guid.NewGuid();
+        //Act
+        var response = await _client.PutAsync($"api/cart/clear/{randomId}", null);
+        //Assert
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("application/problem+json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    }
+
+    [Fact]
+    public async Task ClearShoppingCart_InvalidId_ReturnsBadRequest()
+    {
+        //Arrange
+        await PrepareDatabase();
+        //Act
+        var response = await _client.PutAsync($"api/cart/clear/{Guid.Empty}", null);
+        //Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal("application/problem+json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    }
+
+
     private async Task<List<Cart>> PrepareDatabase()
     {
         var testCarts = new List<Cart>
