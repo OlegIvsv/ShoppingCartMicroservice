@@ -84,7 +84,7 @@ public class CartsControllerIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task GetShoppingCart_EmptyIdValue_ReturnsOkResult()
+    public async Task GetShoppingCart_InvalidId_ReturnsBadRequest()
     {
         //Arrange
         await PrepareDatabase();
@@ -98,7 +98,7 @@ public class CartsControllerIntegrationTests : IDisposable
 
 
     [Fact]
-    public async Task CreateShoppingCart_CartAlreadyExists_ReturnsConflictResult()
+    public async Task CreateShoppingCart_CartAlreadyExists_ReturnsConflict()
     {
         //Arrange
         var cartsInDb = await PrepareDatabase();
@@ -127,7 +127,7 @@ public class CartsControllerIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task CreateShoppingCart_InvalidId_ReturnsBadRequestResult()
+    public async Task CreateShoppingCart_InvalidId_ReturnsBadRequest()
     {
         //Arrange
         await PrepareDatabase();
@@ -152,7 +152,7 @@ public class CartsControllerIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task DeleteShoppingCart_CartDoesNotExist_NotFound()
+    public async Task DeleteShoppingCart_CartDoesNotExist_ReturnsNotFound()
     {
         //Arrange
         await PrepareDatabase();
@@ -192,7 +192,7 @@ public class CartsControllerIntegrationTests : IDisposable
     }
 
     [Fact]
-    public async Task ClearShoppingCart_CartDoesNotExist_NotFound()
+    public async Task ClearShoppingCart_CartDoesNotExist_ReturnsNotFound()
     {
         //Arrange
         await PrepareDatabase();
