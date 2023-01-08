@@ -97,8 +97,46 @@ public class CartsControllerIntegrationTests : IDisposable
     }
 
 
-    
+    [Fact]
+    public async Task CreateShoppingCart_CartAlreadyExists_ReturnsConflictResult()
+    {
+        //Arrange
+        var cartsInDb = await PrepareDatabase();
+        Guid cartId = cartsInDb.Last().Id;
+        //Act
+        var response = await _client.PostAsync($"api/cart/{cartId}", null);
+        //Assert
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal("application/problem+json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    }
 
+    [Fact]
+    public async Task CreateShoppingCart_CartDoesNotExistYet_ReturnsOkWithData()
+    {
+        //Arrange
+        await PrepareDatabase();
+        Guid cartId = Guid.NewGuid();
+        //Act
+        var response = await _client.PostAsync($"api/cart/{cartId}", null);
+        //Assert
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal("application/json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+        var cartFromResponse = await response.Content.ReadFromJsonAsync<CartResponse>();
+        Assert.NotNull(cartFromResponse);
+        Assert.Equal(cartId, cartFromResponse.CustomerId);
+    }
+
+    [Fact]
+    public async Task CreateShoppingCart_InvalidId_ReturnsBadRequestResult()
+    {
+        //Arrange
+        await PrepareDatabase();
+        //Act
+        var response = await _client.PostAsync($"api/cart/{0}", null);
+        //Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal("application/problem+json; charset=utf-8", response.Content.Headers.ContentType.ToString());
+    }
 
 
     private async Task<List<Cart>> PrepareDatabase()
