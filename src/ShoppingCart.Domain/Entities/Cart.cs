@@ -46,10 +46,10 @@ namespace ShoppingCart.Domain.Models
             if(item is null)
                 throw new ArgumentNullException("Item can't be null here");
                 
-            var itemToUpdate = _items.GetValueOrDefault(item.Id);
+            var itemToUpdate = _items.GetValueOrDefault(item.ProductId);
 
             if(itemToUpdate is null)
-                _items[item.Id] = item;
+                _items[item.ProductId] = item;
             else
                 itemToUpdate.SetQuantity(item.Quantity);
         }
