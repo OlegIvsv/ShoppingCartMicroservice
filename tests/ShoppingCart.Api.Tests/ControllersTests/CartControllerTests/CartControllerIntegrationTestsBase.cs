@@ -79,6 +79,22 @@ public class CartsControllerIntegrationTestsBase : IDisposable
            .Value;
     }
 
+    protected async Task AssertItemIsInDb(Guid cartId, Guid productId, int expectedQuantity)
+    {
+        var cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
+        bool result = cart.Items.Any(
+            item => item.ProductId == productId
+            && item.Quantity.Value == expectedQuantity);
+        Assert.True(result, "Test database doesn't contain a product with these Id and Quantity");
+    }
+
+    protected async Task AssertItemIsNotInDb(Guid cartId, Guid productId)
+    {
+        var cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
+        bool result = cart.Items.Any(item => item.ProductId == productId);
+        Assert.False(result, "Test database contains a product with these Id");
+    }
+
     protected void AssertBadRequest(HttpResponseMessage responseMessage)
     {
         Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
