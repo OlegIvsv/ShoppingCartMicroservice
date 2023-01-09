@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
 using ShoppingCart.Domain.Models;
 using ShoppingCart.Domain.ValueObjects;
@@ -95,7 +96,7 @@ namespace ShoppingCart.Api.Controllers
             var item = MapRequest(request);
 
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return ValidationProblem(ModelState);
 
             var cart = await _repository.FindByCustomer(customerId);
             if (cart is null)
@@ -115,7 +116,7 @@ namespace ShoppingCart.Api.Controllers
         {
             var item = MapRequest(request);
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return ValidationProblem(ModelState);
 
             var cart = await _repository.FindByCustomer(customerId);
             if (cart is null)
