@@ -154,11 +154,11 @@ namespace ShoppingCart.Api.Controllers
             if (title.IsFailed)
                 ModelState.AddModelError("ProductTitle", title.Errors.First().Message);
             if (quantity.IsFailed)
-                ModelState.AddModelError("Quantity", title.Errors.First().Message);
+                ModelState.AddModelError("Quantity", quantity.Errors.First().Message);
             if (unitPrice.IsFailed)
-                ModelState.AddModelError("UnitPrice", title.Errors.First().Message);
+                ModelState.AddModelError("UnitPrice", unitPrice.Errors.First().Message);
             if (discount.IsFailed)
-                ModelState.AddModelError("Discount", title.Errors.First().Message);
+                ModelState.AddModelError("Discount", discount.Errors.First().Message);
 
             if (ModelState.ErrorCount != 0)
                 return null;
