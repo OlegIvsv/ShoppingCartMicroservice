@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
+using ShoppingCart.Domain.Errors;
 using ShoppingCart.Domain.ValueObjects;
 using System.Diagnostics.CodeAnalysis;
 
@@ -35,14 +36,14 @@ namespace ShoppingCart.Domain.Models
             Money unitPrice, 
             Discount discount)
         {
-            if(productTitle is null 
-                || quantity is null 
+            if(productTitle is null
+                || quantity is null
                 || unitPrice is null 
                 || discount is null)
                 throw new ArgumentNullException("Arguments can't be null here");
 
             if (productId == Guid.Empty)
-                return Result.Fail("Product id was invalid");
+                return Result.Fail(new InvalidIdValueError(productId));
 
             return new CartItem(productId, productTitle, quantity, unitPrice, discount);
         }

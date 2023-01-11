@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
+using ShoppingCart.Domain.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace ShoppingCart.Domain.ValueObjects
         public static Result<Discount> Create(double value)
         {
             if (value is > MaxDiscount or < MinDiscount)
-                return Result.Fail("Invalid discount value");
+                return Result.Fail(new InvalidDiscountValueError(value));
             
             return new Discount(value);
         }

@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
+using ShoppingCart.Domain.Errors;
 using ShoppingCart.Domain.ValueObjects;
 
 namespace ShoppingCart.Domain.Models
@@ -20,7 +21,7 @@ namespace ShoppingCart.Domain.Models
         public static Result<Cart> Create(Guid customerId)
         {
             if (customerId == Guid.Empty)
-                return Result.Fail("Customer id was invalid");
+                return Result.Fail(new InvalidIdValueError(customerId));
             return new Cart(customerId);
         }
 

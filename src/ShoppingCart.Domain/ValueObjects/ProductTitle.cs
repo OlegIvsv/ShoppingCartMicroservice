@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
+using ShoppingCart.Domain.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ShoppingCart.Domain.ValueObjects
         public static Result<ProductTitle> Create(string value)
         {
             if (string.IsNullOrWhiteSpace(value) || value.Length > MaxTitleLength)
-                return Result.Fail("Invalid product title");
+                return Result.Fail(new InvalidTitleValueError(value));
             return new ProductTitle(value);
         }
 
