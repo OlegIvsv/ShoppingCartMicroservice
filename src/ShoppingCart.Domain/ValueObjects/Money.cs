@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
+using ShoppingCart.Domain.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace ShoppingCart.Domain.ValueObjects
         public static Result<Money> Create(decimal value)
         {
             if (value < MinMoneyValue)
-                return Result.Fail("Invalid price value");
+                return Result.Fail(new InavalidMoneyValueError(value));
             return new Money(value);
         }
 

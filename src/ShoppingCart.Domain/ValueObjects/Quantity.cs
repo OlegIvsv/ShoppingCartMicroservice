@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
+using ShoppingCart.Domain.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace ShoppingCart.Domain.ValueObjects
         public static Result<Quantity> Create(int value)
         {
             if (value is > MaxQuantityForProduct or < 1)
-                return Result.Fail("Invalid quantity value");
+                return Result.Fail(new InvalidQuantityValueError(value));
             return new Quantity(value);
         }
 
