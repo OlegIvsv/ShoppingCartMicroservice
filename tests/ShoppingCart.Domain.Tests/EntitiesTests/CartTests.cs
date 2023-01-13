@@ -3,58 +3,62 @@ using ShoppingCart.Domain.ValueObjects;
 using Xunit;
 
 namespace ShoppingCart.Domain.Tests.ModelsTests;
+
 public class CartTests
 {
     [Fact]
-    public void PutItem_PutNewItem_AddToItemsAndReturnsTrue()
+    public void PutItem_NewItem_AddToItems()
     {
         //Arrange
         var cart = CreateTestCart();
-        var newCartItem = CreateTestItem(Guid.NewGuid(), "TestProduct_5", 5, 4.00m, 0.01);
-        //Act
-        cart.PutItem(newCartItem);
-        //Assert
-        Assert.Single(cart.Items, p => p.ProductId == newCartItem.ProductId);
-    }
-
-    [Fact]
-    public void PutItem_PutExistingItem_ReplacesItemAndReturnsFalse()
-    {
-        //Arrange
-        var cart = CreateTestCart();
-        var item = cart.Items.First();
-        int previousQuantity = item.Quantity.Value;
-        var newCartItem = CreateTestItem(item.ProductId, "TestProduct_4", 4, 4.00m, 0.01);
+        var newCartItem = CreateTestItem(Guid.NewGuid(), "Test Product", 5, 4.00m, 0.01);
         //Act
         cart.PutItem(newCartItem);
         //Assert
         var itemAfter = Assert.Single(cart.Items, p => p.ProductId == newCartItem.ProductId);
-        Assert.Equal(itemAfter.Quantity.Value, previousQuantity + 4);
+        Assert.Equal(newCartItem.ItemQuantity, itemAfter.ItemQuantity);
     }
 
     [Fact]
-    public void RemoveItem_RemoveExistingItem_RemovesItem()
+    public void PutItem_ExistingItem_CorrectsItemQuantity()
     {
         //Arrange
         var cart = CreateTestCart();
-        Guid itemToRemoveId = cart.Items.Skip(2).First().ProductId;  
+        var item = cart.Items.First();
+        int previousQuantity = item.ItemQuantity.Value;
+        var newCartItem = CreateTestItem(item.ProductId, "Test Product", 4, 4.00m, 0.01);
         //Act
-        cart.RemoveItem(itemToRemoveId);
+        cart.PutItem(newCartItem);
         //Assert
-        Assert.DoesNotContain(cart.Items, item => item.ProductId == itemToRemoveId);
+        var itemAfter = Assert.Single(cart.Items, p => p.ProductId == newCartItem.ProductId);
+        Assert.Equal(previousQuantity + 4, itemAfter.ItemQuantity.Value);
     }
 
     [Fact]
-    public void RemoveItem_RemoveUnexistingItem_ThrowsException()
+    public void UpdateItem_ExistingItem_UpdatesItemQuantity()
     {
         //Arrange
         var cart = CreateTestCart();
-        Guid itemToRemoveId = cart.Items.Skip(2).First().ProductId;
-        int sizeBefore = cart.Items.Count;
+        var item = cart.Items.First();
+        var newCartItem = CreateTestItem(item.ProductId, "Test Product", 4, 4.00m, 0.01);
         //Act
-        var action = () => cart.RemoveItem(itemToRemoveId);
+        cart.UpdateItem(newCartItem);
         //Assert
-        Assert.Equal(sizeBefore, cart.Items.Count);
+        var itemAfter = Assert.Single(cart.Items, p => p.ProductId == newCartItem.ProductId);
+        Assert.Equal(newCartItem.ItemQuantity, itemAfter.ItemQuantity);
+    }
+
+    [Fact]
+    public void UpdateItem_ItemDoesNotExists_AddsItemToCart()
+    {
+        //Arrange
+        var cart = CreateTestCart();
+        var newCartItem = CreateTestItem(Guid.NewGuid(), "Test Product", 4, 4.00m, 0.01);
+        //Act
+        cart.UpdateItem(newCartItem);
+        //Assert
+        var itemAfter = Assert.Single(cart.Items, p => p.ProductId == newCartItem.ProductId);
+        Assert.Equal(4, itemAfter.ItemQuantity.Value);
     }
 
     private Cart CreateTestCart()
