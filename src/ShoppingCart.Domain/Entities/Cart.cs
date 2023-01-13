@@ -1,7 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
 using ShoppingCart.Domain.Errors;
-using ShoppingCart.Domain.ValueObjects;
 
 namespace ShoppingCart.Domain.Models
 {
@@ -9,7 +8,6 @@ namespace ShoppingCart.Domain.Models
     {
         private Dictionary<Guid, CartItem> _items;
         public IReadOnlyCollection<CartItem> Items => _items.Values;
-
 
         private Cart(Guid customerId)
         {
@@ -25,49 +23,36 @@ namespace ShoppingCart.Domain.Models
             return new Cart(customerId);
         }
 
-
         public void PutItem(CartItem item)
         {
-            if (item is null)
-                throw new ArgumentNullException("Item can't be null here");
-
-            var itemInCart = _items.GetValueOrDefault(item.ProductId);
-
-            if (itemInCart is null)
+            if (!ContainsItem(item))
                 _items[item.ProductId] = item;
             else
-            {
-                Quantity newQuantity = Quantity.Add(itemInCart.Quantity, item.Quantity);
-                _items[item.ProductId].SetQuantity(newQuantity);
-            }
+                _items[item.ProductId].CorrectQuantityWith(item.ItemQuantity);
         }
 
         public void UpdateItem(CartItem item)
         {
-            if(item is null)
-                throw new ArgumentNullException("Item can't be null here");
-                
-            var itemToUpdate = _items.GetValueOrDefault(item.ProductId);
-
-            if(itemToUpdate is null)
+            if(!ContainsItem(item))
                 _items[item.ProductId] = item;
             else
-                itemToUpdate.SetQuantity(item.Quantity);
+                _items[item.ProductId].SetQuantity(item.ItemQuantity);
+        }
+
+        private bool ContainsItem(CartItem item)
+        {
+            if (item is null)
+                throw new ArgumentNullException("Item can't be null here");
+            return _items.ContainsKey(item.ProductId);
         }
 
         public bool RemoveItem(Guid productId)
-        {
-            return _items.Remove(productId);
-        }
+            => _items.Remove(productId);
 
         public void Clear()
-        {
-            _items.Clear();
-        }
+            => _items.Clear();
 
         public bool IsEmpty()
-        {
-            return _items.Count == 0;
-        }
+            => _items.Count == 0;
     }
 }

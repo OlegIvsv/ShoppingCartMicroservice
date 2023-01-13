@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ShoppingCart.Domain.Common
 {
     public abstract class ValueObject<T> : IEquatable<T> where T : ValueObject<T>
     {
-        public abstract IEnumerable<object> AtomicValuesList();
+        protected abstract IEnumerable<object> AtomicValuesList();
 
         public bool Equals(T? other)
         {

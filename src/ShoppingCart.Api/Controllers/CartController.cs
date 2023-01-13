@@ -187,7 +187,7 @@ namespace ShoppingCart.Api.Controllers
                 item.ProductId,
                 item.UnitPrice.Value,
                 item.ProductTitle.Value,
-                item.Quantity.Value,
+                item.ItemQuantity.Value,
                 item.Discount.Value);
         }
 

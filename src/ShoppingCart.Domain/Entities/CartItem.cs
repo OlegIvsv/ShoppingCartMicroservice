@@ -2,7 +2,6 @@
 using ShoppingCart.Domain.Common;
 using ShoppingCart.Domain.Errors;
 using ShoppingCart.Domain.ValueObjects;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ShoppingCart.Domain.Models
 {
@@ -11,7 +10,7 @@ namespace ShoppingCart.Domain.Models
         public Guid ProductId { get; private init; }
         public ProductTitle ProductTitle { get; private init; }
         public Money UnitPrice { get; private init; }
-        public Quantity Quantity { get; private set; }
+        public Quantity ItemQuantity { get; private set; }
         public Discount Discount { get; private init; }
          
         private CartItem(
@@ -25,7 +24,7 @@ namespace ShoppingCart.Domain.Models
             ProductId = productId;
             ProductTitle = productTitle;
             UnitPrice = unitPrice;
-            Quantity = quantity;
+            ItemQuantity = quantity;
             Discount = discount;
         }
 
@@ -36,9 +35,9 @@ namespace ShoppingCart.Domain.Models
             Money unitPrice, 
             Discount discount)
         {
-            if(productTitle is null
+            if (productTitle is null
                 || quantity is null
-                || unitPrice is null 
+                || unitPrice is null
                 || discount is null)
                 throw new ArgumentNullException("Arguments can't be null here");
 
@@ -48,12 +47,20 @@ namespace ShoppingCart.Domain.Models
             return new CartItem(productId, productTitle, quantity, unitPrice, discount);
         }
 
+        public void CorrectQuantityWith(Quantity quantityChange)
+        {
+            if (quantityChange is null)
+                throw new ArgumentNullException("Quantity can't be null here");
+            Quantity newQuantity = Quantity.Add(ItemQuantity, quantityChange);
+            ItemQuantity = newQuantity;
+        }
+
         public void SetQuantity(Quantity newQuantity)
         {
-            if(newQuantity is null)
+            if (newQuantity is null)
                 throw new ArgumentNullException("Quantity can't be null here");
-
-            Quantity = newQuantity;
+            ItemQuantity = newQuantity;
         }
     }
 }
+ 

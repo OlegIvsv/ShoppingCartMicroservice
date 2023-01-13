@@ -1,11 +1,6 @@
 ﻿using FluentResults;
 using ShoppingCart.Domain.Common;
 using ShoppingCart.Domain.Errors;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShoppingCart.Domain.ValueObjects
 {
@@ -26,7 +21,7 @@ namespace ShoppingCart.Domain.ValueObjects
             return new ProductTitle(value);
         }
 
-        public override IEnumerable<object> AtomicValuesList()
+        protected override IEnumerable<object> AtomicValuesList()
         {
             yield return Value;
         }
