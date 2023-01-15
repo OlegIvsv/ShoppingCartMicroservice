@@ -33,7 +33,7 @@ namespace ShoppingCart.Api.Controllers
             await _repository.Add(cart.Value);
             return CreatedAtAction(
                 nameof(CreateShoppingCart),
-                MapResponse(cart.Value));
+                CartResponse.FromEntity(cart.Value));
         }
 
         [HttpGet("{customerId}")]
@@ -48,7 +48,7 @@ namespace ShoppingCart.Api.Controllers
             if (cart is null)
                 return NotFound();
 
-            var responseCart = MapResponse(cart);
+            var responseCart = CartResponse.FromEntity(cart);
             return Ok(responseCart);
         }
 
@@ -136,24 +136,6 @@ namespace ShoppingCart.Api.Controllers
                 await _repository.Update(cart);
 
             return Ok();
-        }
-        
-        private CartItemResponse MapResponse(CartItem item)
-        {
-            return new CartItemResponse(
-                item.Id,
-                item.ProductId,
-                item.UnitPrice.Value,
-                item.ProductTitle.Value,
-                item.ItemQuantity.Value,
-                item.Discount.Value);
-        }
-
-        private CartResponse MapResponse(Cart cart)
-        {
-            return new CartResponse(
-                cart.Id,
-                cart.Items.Select(item => MapResponse(item)).ToArray());
         }
     }
 }
