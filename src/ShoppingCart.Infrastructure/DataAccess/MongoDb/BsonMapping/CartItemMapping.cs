@@ -17,7 +17,7 @@ namespace ShoppingCart.Infrastructure.DataAccess.MongoDb.BsonMapping
                 map.MapProperty(item => item.ProductId).SetElementName("productId");
                 map.MapProperty(item => item.ProductTitle).SetElementName("productTitle");
                 map.MapField(item => item.UnitPrice).SetElementName("unitPrice");
-                map.MapField(item => item.Quantity).SetElementName("quantity");
+                map.MapField(item => item.ItemQuantity).SetElementName("quantity");
                 map.MapField(item => item.Discount).SetElementName("discount");
             });
         }

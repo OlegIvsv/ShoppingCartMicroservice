@@ -41,7 +41,7 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
             JsonContent.Create(bodyObject));
         //Assert
         AssertOK(response);
-        await AssertItemIsInDb(cart.Id, item.ProductId, item.Quantity.Value + 7);
+        await AssertItemIsInDb(cart.Id, item.ProductId, item.ItemQuantity.Value + 7);
     }
 
     [Fact]

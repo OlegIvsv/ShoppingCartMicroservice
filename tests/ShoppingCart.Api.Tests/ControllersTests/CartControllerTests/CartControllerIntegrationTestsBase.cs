@@ -84,7 +84,7 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         var cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
         bool result = cart.Items.Any(
             item => item.ProductId == productId
-            && item.Quantity.Value == expectedQuantity);
+            && item.ItemQuantity.Value == expectedQuantity);
         Assert.True(result, "Test database doesn't contain a product with these Id and Quantity");
     }
 
