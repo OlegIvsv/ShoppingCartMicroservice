@@ -14,7 +14,9 @@ namespace ShoppingCart.Infrastructure.DataAccess.MongoDb.BsonMapping
         {
             BsonClassMap.RegisterClassMap<Cart>(map =>
             {
-                map.MapField("_items").SetElementName("items");
+                map.MapField(cart => cart.Items).SetElementName("items");
+                var methodInfo = typeof(Cart).GetMethod(nameof(Cart.Create));
+                map.MapFactoryMethod(methodInfo, "Id", "Items");
             });
         }
     }
