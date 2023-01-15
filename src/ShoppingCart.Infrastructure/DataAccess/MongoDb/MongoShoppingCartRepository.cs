@@ -28,7 +28,6 @@ namespace ShoppingCart.Infrastructure.DataAccess
             BsonSerializer.RegisterSerializer<Quantity>(new QuantitySerrializer());
             BsonSerializer.RegisterSerializer<Discount>(new DiscountSerrializer());
             BsonSerializer.RegisterSerializer<ProductTitle>(new ProductTitleSerrializer());
-            BsonSerializer.RegisterSerializer<Dictionary<Guid, CartItem>>(new CartItemsSerrializer());
 
             new CartItemMapping().RegisterMap();
             new CartMapping().RegisterMap();
