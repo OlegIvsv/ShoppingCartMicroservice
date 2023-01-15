@@ -28,7 +28,7 @@ public class CartItemBinder : IModelBinder
         if (bindingContext.ModelState.ErrorCount != 0)
             return;
 
-        var cartItemResult = CartItem.Create(
+        var cartItemResult = CartItem.TryCreate(
             cartItemRequest.ProductId,
             titleResult.Value,
             quantityResult.Value,

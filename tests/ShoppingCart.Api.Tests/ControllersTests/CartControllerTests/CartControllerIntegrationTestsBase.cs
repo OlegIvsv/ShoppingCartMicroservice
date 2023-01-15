@@ -54,9 +54,9 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     {
         var testCarts = new List<Cart>
         {
-            Cart.Create(Guid.Parse("008927df-3b96-4707-ad84-4e689d634987")).Value,
-            Cart.Create(Guid.Parse("35454152-4895-42d7-b887-f274deff210d")).Value,
-            Cart.Create(Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2")).Value
+            Cart.TryCreate(Guid.Parse("008927df-3b96-4707-ad84-4e689d634987")).Value,
+            Cart.TryCreate(Guid.Parse("35454152-4895-42d7-b887-f274deff210d")).Value,
+            Cart.TryCreate(Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2")).Value
         };
 
         testCarts[0].PutItem(
@@ -70,7 +70,7 @@ public class CartsControllerIntegrationTestsBase : IDisposable
 
     protected CartItem CreateTestItem(string id, string title, int quantity, decimal price, double discount)
     {
-        return CartItem.Create(
+        return CartItem.TryCreate(
                Guid.Parse(id),
                ProductTitle.Create(title).Value,
                Quantity.Create(quantity).Value,

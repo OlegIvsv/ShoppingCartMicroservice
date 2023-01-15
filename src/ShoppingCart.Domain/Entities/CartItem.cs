@@ -20,6 +20,9 @@ namespace ShoppingCart.Domain.Models
             Money unitPrice, 
             Discount discount)
         {
+            if (productTitle is null || quantity is null 
+                || unitPrice is null || discount is null)
+                throw new ArgumentNullException("Arguments can't be null here");
             Id = Guid.NewGuid();
             ProductId = productId;
             ProductTitle = productTitle;
@@ -28,22 +31,27 @@ namespace ShoppingCart.Domain.Models
             Discount = discount;
         }
 
-        public static Result<CartItem> Create(
+        public static Result<CartItem> TryCreate(
             Guid productId, 
             ProductTitle productTitle, 
             Quantity quantity, 
             Money unitPrice, 
             Discount discount)
         {
-            if (productTitle is null
-                || quantity is null
-                || unitPrice is null
-                || discount is null)
-                throw new ArgumentNullException("Arguments can't be null here");
-
             if (productId == Guid.Empty)
                 return Result.Fail(new InvalidIdValueError(productId));
-
+            return new CartItem(productId, productTitle, quantity, unitPrice, discount);
+        }
+        
+        public static CartItem Create(
+            Guid productId, 
+            ProductTitle productTitle, 
+            Quantity quantity, 
+            Money unitPrice, 
+            Discount discount)
+        {
+            if (productId == Guid.Empty)
+                throw new ArgumentException("Invalid id value", nameof(productId));
             return new CartItem(productId, productTitle, quantity, unitPrice, discount);
         }
 

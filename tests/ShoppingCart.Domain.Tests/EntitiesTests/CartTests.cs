@@ -65,7 +65,7 @@ public class CartTests
     {
         var items = new List<CartItem>()
         {
-            CartItem.Create(
+            CartItem.TryCreate(
                 Guid.NewGuid(),
                 ProductTitle.Create("Product_1").Value,
                 Quantity.Create(1).Value,
@@ -73,7 +73,7 @@ public class CartTests
                 Discount.Create(0.05).Value)
             .Value,
 
-            CartItem.Create(
+            CartItem.TryCreate(
                 Guid.NewGuid(),
                 ProductTitle.Create("Product_2").Value,
                 Quantity.Create(4).Value,
@@ -81,7 +81,7 @@ public class CartTests
                 Discount.Create(0.00).Value)
             .Value,
 
-            CartItem.Create(
+            CartItem.TryCreate(
                 Guid.NewGuid(),
                 ProductTitle.Create("Product_3").Value,
                 Quantity.Create(20).Value,
@@ -89,7 +89,7 @@ public class CartTests
                 Discount.Create(0.10).Value)
             .Value,
 
-            CartItem.Create(
+            CartItem.TryCreate(
                 Guid.NewGuid(),
                 ProductTitle.Create("Product_4").Value,
                 Quantity.Create(5).Value,
@@ -98,14 +98,14 @@ public class CartTests
             .Value,
         };
 
-        var cart = Cart.Create(Guid.NewGuid()).Value;
+        var cart = Cart.TryCreate(Guid.NewGuid()).Value;
         items.ForEach(i => cart.PutItem(i));
         return cart;
     }
 
     private CartItem CreateTestItem(Guid productId, string title, int quantity, decimal price, double discount)
     {
-        return CartItem.Create(
+        return CartItem.TryCreate(
                 productId,
                 ProductTitle.Create(title).Value,
                 Quantity.Create(quantity).Value,

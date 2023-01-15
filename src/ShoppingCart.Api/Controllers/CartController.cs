@@ -26,7 +26,7 @@ namespace ShoppingCart.Api.Controllers
             if (cartInRepo is not null)
                 return Conflict();
 
-            var cart = Cart.Create(customerId);
+            var cart = Cart.TryCreate(customerId);
             if (cart.IsFailed)
                 return BadRequest();
 

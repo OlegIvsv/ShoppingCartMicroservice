@@ -9,20 +9,37 @@ namespace ShoppingCart.Domain.Models
         private Dictionary<Guid, CartItem> _items;
         public IReadOnlyCollection<CartItem> Items => _items.Values;
 
-        private Cart(Guid customerId)
+        private Cart(Guid customerId, IEnumerable<CartItem>? items)
         {
-            base.Id = customerId;
             Id = customerId;
             _items= new Dictionary<Guid, CartItem>();
+            Fill(items);
         }
 
-        public static Result<Cart> Create(Guid customerId)
+        public static Result<Cart> TryCreate(Guid customerId, IEnumerable<CartItem> items = null)
         {
             if (customerId == Guid.Empty)
                 return Result.Fail(new InvalidIdValueError(customerId));
-            return new Cart(customerId);
+            var cart = new Cart(customerId, items);
+            return cart;
+        }
+        
+        public static Cart Create(Guid customerId, IEnumerable<CartItem> items = null)
+        { 
+            if (customerId == Guid.Empty)
+                throw new ArgumentException("Invalid id value!", nameof(customerId));
+            var cart = new Cart(customerId, items);
+            return cart;
         }
 
+        private void Fill(IEnumerable<CartItem>? items)
+        {
+            if (items is null)
+                return;
+            foreach (var item in items)
+                PutItem(item);
+        }
+        
         public void PutItem(CartItem item)
         {
             if (!ContainsItem(item))
