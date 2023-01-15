@@ -4,6 +4,6 @@
         Guid ProductId,
         decimal UnitPrice,
         string ProductTitle,
-        int Quantity,
+        int ItemQuantity,
         double Discount);
 }
