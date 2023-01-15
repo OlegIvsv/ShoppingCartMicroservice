@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
 using ShoppingCart.Domain.Models;
-using ShoppingCart.Domain.ValueObjects;
 using ShoppingCart.Infrastructure.DataAccess;
 
 namespace ShoppingCart.Api.Controllers
@@ -17,7 +15,6 @@ namespace ShoppingCart.Api.Controllers
         {
             _repository = cartRepository;
         }
-
 
         [HttpPost("{customerId}")]
         [ProducesResponseType(typeof(CartResponse), 201)]
@@ -91,10 +88,8 @@ namespace ShoppingCart.Api.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> PutItemToCart(Guid customerId, [FromBody] CartItemRequest request)
+        public async Task<IActionResult> PutItemToCart(Guid customerId, CartItem item)
         {
-            var item = MapRequest(request);
-
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 
@@ -112,9 +107,8 @@ namespace ShoppingCart.Api.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> UpdateItemInCart(Guid customerId, [FromBody] CartItemRequest request)
+        public async Task<IActionResult> UpdateItemInCart(Guid customerId, CartItem item)
         {
-            var item = MapRequest(request);
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 
@@ -143,43 +137,7 @@ namespace ShoppingCart.Api.Controllers
 
             return Ok();
         }
-
-
-        private CartItem? MapRequest(CartItemRequest request)
-        {
-            var title = ProductTitle.Create(request.ProductTitle);
-            var quantity = Quantity.Create(request.Quantity);
-            var unitPrice = Money.Create(request.UnitPrice);
-            var discount = Discount.Create(request.Discount);
-
-            if (title.IsFailed)
-                ModelState.AddModelError("ProductTitle", title.Errors.First().Message);
-            if (quantity.IsFailed)
-                ModelState.AddModelError("Quantity", quantity.Errors.First().Message);
-            if (unitPrice.IsFailed)
-                ModelState.AddModelError("UnitPrice", unitPrice.Errors.First().Message);
-            if (discount.IsFailed)
-                ModelState.AddModelError("Discount", discount.Errors.First().Message);
-
-            if (ModelState.ErrorCount != 0)
-                return null;
-
-            var item = CartItem.Create(
-                request.ProductId,
-                title.Value,
-                quantity.Value,
-                unitPrice.Value,
-                discount.Value);
-
-            if (item.IsFailed)
-            {
-                ModelState.AddModelError("CartItem", item.Errors.First().Message);
-                return null;
-            }
-
-            return item.Value;
-        }
-
+        
         private CartItemResponse MapResponse(CartItem item)
         {
             return new CartItemResponse(
