@@ -88,7 +88,7 @@ namespace ShoppingCart.Api.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> PutItemToCart(Guid customerId, CartItem item)
+        public async Task<IActionResult> PutItemToCart(Guid customerId, [FromBody]CartItem? item)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);

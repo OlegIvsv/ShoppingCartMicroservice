@@ -1,4 +1,4 @@
-﻿using FluentResults;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ShoppingCart.Domain.Models;
 using ShoppingCart.Domain.ValueObjects;
@@ -7,25 +7,40 @@ namespace ShoppingCart.Api.Contracts.ContractBinders;
 
 public class CartItemBinder : IModelBinder
 {
+    private ModelBindingContext _bindingContext;
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        var cartItemRequest = await bindingContext.HttpContext.Request
-            .ReadFromJsonAsync<CartItemRequest>();
-        
+        _bindingContext = bindingContext;
+        try
+        {
+            var itemRequest = await _bindingContext.HttpContext.Request
+                .ReadFromJsonAsync<CartItemRequest>();
+            SetModelFromDTO(itemRequest);
+        }
+        catch (JsonException ex)
+        {
+            _bindingContext.ModelState.AddModelError(
+                "ObjectFormatError", 
+                $"{ex.InnerException.Message} The following json element caused a problem: {ex.Path}");
+        }
+    }
+    
+    private void SetModelFromDTO(CartItemRequest cartItemRequest)
+    {
         var titleResult = ProductTitle.Create(cartItemRequest.ProductTitle);
         var quantityResult = Quantity.Create(cartItemRequest.ItemQuantity);
         var unitPriceResult = Money.Create(cartItemRequest.UnitPrice);
         var discountResult = Discount.Create(cartItemRequest.Discount);
     
         if (titleResult.IsFailed)
-            PutError("ProductTitle", titleResult);
+            _bindingContext.ModelState.AddModelError("ProductTitle", titleResult.Errors.First().Message);
         if (quantityResult.IsFailed)
-            PutError("Quantity", quantityResult);
+            _bindingContext.ModelState.AddModelError("Quantity", quantityResult.Errors.First().Message);
         if (unitPriceResult.IsFailed)
-            PutError("UnitPrice", unitPriceResult);
+            _bindingContext.ModelState.AddModelError("UnitPrice", unitPriceResult.Errors.First().Message);
         if (discountResult.IsFailed)
-            PutError("Discount", discountResult);
-        if (bindingContext.ModelState.ErrorCount != 0)
+            _bindingContext.ModelState.AddModelError("Discount", discountResult.Errors.First().Message);
+        if (_bindingContext.ModelState.ErrorCount != 0)
             return;
 
         var cartItemResult = CartItem.TryCreate(
@@ -36,13 +51,8 @@ public class CartItemBinder : IModelBinder
             discountResult.Value);
 
         if (cartItemResult.IsFailed)
-            PutError("CartItem", cartItemResult); 
-        else 
-            bindingContext.Result = ModelBindingResult.Success(cartItemResult.Value);
-        
-        void PutError<T>(string title, Result<T> result)        
-        {
-            bindingContext.ModelState.AddModelError(title, result.Errors.First().Message);
-        }
+            _bindingContext.ModelState.AddModelError("CartItem", cartItemResult.Errors.First().Message);
+        else
+            _bindingContext.Result = ModelBindingResult.Success(cartItemResult.Value);
     }
 }
