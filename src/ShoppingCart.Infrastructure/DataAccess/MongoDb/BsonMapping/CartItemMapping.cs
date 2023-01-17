@@ -1,33 +1,29 @@
 ﻿using MongoDB.Bson.Serialization;
-using ShoppingCart.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ShoppingCart.Domain.Entities;
 
-namespace ShoppingCart.Infrastructure.DataAccess.MongoDb.BsonMapping
+namespace ShoppingCart.Infrastructure.DataAccess.MongoDb.BsonMapping;
+
+internal class CartItemMapping
 {
-    internal class CartItemMapping
+    public void RegisterMap()
     {
-        public void RegisterMap()
+        BsonClassMap.RegisterClassMap<CartItem>(map =>
         {
-            BsonClassMap.RegisterClassMap<CartItem>(map =>
-            {
-                map.MapProperty(item => item.ProductId).SetElementName("productId");
-                map.MapProperty(item => item.ProductTitle).SetElementName("productTitle");
-                map.MapField(item => item.UnitPrice).SetElementName("unitPrice");
-                map.MapField(item => item.ItemQuantity).SetElementName("quantity");
-                map.MapField(item => item.Discount).SetElementName("discount");
-                var methodInfo = typeof(CartItem).GetMethod(nameof(Cart.Create));
-                map.MapFactoryMethod(
-                    methodInfo, 
-                    "ProductId",
-                    "ProductTitle",
-                    "ItemQuantity",
-                    "UnitPrice",
-                    "Discount"); 
-            });
-        }
+            map.MapProperty(item => item.ProductId).SetElementName("productId");
+            map.MapProperty(item => item.ProductTitle).SetElementName("productTitle");
+            map.MapField(item => item.UnitPrice).SetElementName("unitPrice");
+            map.MapField(item => item.ItemQuantity).SetElementName("quantity");
+            map.MapField(item => item.Discount).SetElementName("discount");
+
+            string factoryMethodName = nameof(Cart.Create);
+            var methodInfo = typeof(CartItem).GetMethod(factoryMethodName);
+            map.MapFactoryMethod(
+                methodInfo,
+                "ProductId",
+                "ProductTitle",
+                "ItemQuantity",
+                "UnitPrice",
+                "Discount");
+        });
     }
 }

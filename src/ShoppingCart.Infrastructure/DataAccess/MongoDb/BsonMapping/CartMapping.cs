@@ -1,23 +1,19 @@
 ﻿using MongoDB.Bson.Serialization;
-using ShoppingCart.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ShoppingCart.Domain.Entities;
 
-namespace ShoppingCart.Infrastructure.DataAccess.MongoDb.BsonMapping
+namespace ShoppingCart.Infrastructure.DataAccess.MongoDb.BsonMapping;
+
+internal class CartMapping
 {
-    internal class CartMapping
+    public void RegisterMap()
     {
-        public void RegisterMap()
+        BsonClassMap.RegisterClassMap<Cart>(map =>
         {
-            BsonClassMap.RegisterClassMap<Cart>(map =>
-            {
-                map.MapField(cart => cart.Items).SetElementName("items");
-                var methodInfo = typeof(Cart).GetMethod(nameof(Cart.Create));
-                map.MapFactoryMethod(methodInfo, "Id", "Items");
-            });
-        }
+            map.MapField(cart => cart.Items).SetElementName("items");
+
+            string factoryMethodName = nameof(Cart.Create);
+            var methodInfo = typeof(Cart).GetMethod(factoryMethodName);
+            map.MapFactoryMethod(methodInfo, "Id", "Items");
+        });
     }
 }
