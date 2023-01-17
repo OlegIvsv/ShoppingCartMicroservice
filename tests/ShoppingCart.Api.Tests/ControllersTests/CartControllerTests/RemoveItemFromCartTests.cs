@@ -29,11 +29,10 @@ public class RemoveItemFromCartTests : CartsControllerIntegrationTestsBase
         //Arrange
         await PrepareDatabase();
         var cartId = Guid.NewGuid();
-        CartItemRequest bodyObject = new(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 1.07);
+        var productId = Guid.NewGuid();
         //Act
         HttpResponseMessage response = await _client.PutAsync(
-            $"api/cart/remove-item/{cartId}",
-            JsonContent.Create(bodyObject));
+            $"api/cart/remove-item/{cartId}?productId={productId}", null);
         //Assert
         AssertNotFound(response);
         AssertJsonProblemUtf8(response);
