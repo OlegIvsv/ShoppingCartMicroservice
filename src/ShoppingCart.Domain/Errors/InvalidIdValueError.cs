@@ -1,11 +1,11 @@
 ﻿using FluentResults;
 
-namespace ShoppingCart.Domain.Errors
+namespace ShoppingCart.Domain.Errors;
+
+public class InvalidIdValueError : Error
 {
-    public class InvalidIdValueError: Error
+    public InvalidIdValueError(Guid value)
+        : base($"Invalid id value : {value}")
     {
-        public InvalidIdValueError(Guid value)
-            : base($"Invalid id value : {value}") { }
     }
 }
-

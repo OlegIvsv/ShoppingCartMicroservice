@@ -1,10 +1,11 @@
 ﻿using FluentResults;
 
-namespace ShoppingCart.Domain.Errors
+namespace ShoppingCart.Domain.Errors;
+
+public class ValueNotProvidedError : Error
 {
-    public class ValueNotProvidedError: Error
+    public ValueNotProvidedError()
+        : base($"Value was not provided")
     {
-        public ValueNotProvidedError()
-            : base($"Value was not provided") { }
     }
 }
