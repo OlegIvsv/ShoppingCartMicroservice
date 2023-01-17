@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Contracts.ContractAttributes;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Interfaces.Interfaces;
 
@@ -20,7 +21,7 @@ public class CartController : ControllerBase
     [ProducesResponseType(typeof(CartResponse), 201)]
     [ProducesResponseType(409)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> CreateShoppingCart(Guid customerId)
+    public async Task<IActionResult> CreateShoppingCart([GuidId] Guid customerId)
     {
         var cartInRepo = await _repository.FindByCustomer(customerId);
         if (cartInRepo is not null)
@@ -39,11 +40,8 @@ public class CartController : ControllerBase
     [HttpGet("{customerId}")]
     [ProducesResponseType(typeof(CartResponse), 200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> GetShoppingCart(Guid customerId)
+    public async Task<IActionResult> GetShoppingCart([GuidId] Guid customerId)
     {
-        if (customerId == Guid.Empty)
-            return BadRequest();
-
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
             return NotFound();
@@ -55,11 +53,8 @@ public class CartController : ControllerBase
     [HttpDelete("{customerId}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> DeleteShoppingCart(Guid customerId)
+    public async Task<IActionResult> DeleteShoppingCart([GuidId] Guid customerId)
     {
-        if (customerId == Guid.Empty)
-            return BadRequest();
-
         var deleted = await _repository.Delete(customerId);
         if (!deleted)
             return NotFound();
@@ -70,11 +65,8 @@ public class CartController : ControllerBase
     [HttpPut("clear/{customerId}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> ClearShoppingCart(Guid customerId)
+    public async Task<IActionResult> ClearShoppingCart([GuidId] Guid customerId)
     {
-        if (customerId == Guid.Empty)
-            return BadRequest();
-
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
             return NotFound();
@@ -88,7 +80,9 @@ public class CartController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
-    public async Task<IActionResult> PutItemToCart(Guid customerId, [FromBody] CartItem? item)
+    public async Task<IActionResult> PutItemToCart( 
+        [GuidId] Guid customerId, 
+        [FromBody] CartItem? item)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
@@ -106,7 +100,9 @@ public class CartController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
-    public async Task<IActionResult> UpdateItemInCart(Guid customerId, CartItem item)
+    public async Task<IActionResult> UpdateItemInCart(
+        [GuidId] Guid customerId, 
+        [FromBody] CartItem item)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
@@ -123,7 +119,9 @@ public class CartController : ControllerBase
     [HttpPut("remove-item/{customerId}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
-    public async Task<IActionResult> RemoveItemFromCart(Guid customerId, [FromQuery] Guid productId)
+    public async Task<IActionResult> RemoveItemFromCart(
+        [GuidId] Guid customerId, 
+        [FromQuery][GuidId] Guid productId)
     {
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
