@@ -1,13 +1,14 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using ShoppingCart.Domain.Models;
+using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.ValueObjects;
 
-namespace ShoppingCart.Api.Contracts.ContractBinders;   
+namespace ShoppingCart.Api.Contracts.ContractBinders;
 
 public class CartItemBinder : IModelBinder
 {
     private ModelBindingContext _bindingContext;
+
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
         _bindingContext = bindingContext;
@@ -20,18 +21,18 @@ public class CartItemBinder : IModelBinder
         catch (JsonException ex)
         {
             _bindingContext.ModelState.AddModelError(
-                "ObjectFormatError", 
-                $"{ex.InnerException.Message} The following json element caused a problem: {ex.Path}");
+                "ObjectFormatError",
+                $"{ex.InnerException?.Message} The following json element caused a problem: {ex.Path}");
         }
     }
-    
+
     private void SetModelFromDTO(CartItemRequest cartItemRequest)
     {
         var titleResult = ProductTitle.Create(cartItemRequest.ProductTitle);
         var quantityResult = Quantity.Create(cartItemRequest.ItemQuantity);
         var unitPriceResult = Money.Create(cartItemRequest.UnitPrice);
         var discountResult = Discount.Create(cartItemRequest.Discount);
-    
+
         if (titleResult.IsFailed)
             _bindingContext.ModelState.AddModelError("ProductTitle", titleResult.Errors.First().Message);
         if (quantityResult.IsFailed)

@@ -1,7 +1,6 @@
 using ShoppingCart.Api;
 using ShoppingCart.Infrastructure;
 
-
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddApiPresentation();
@@ -18,10 +17,16 @@ var app = builder.Build();
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();
     app.Run();
 }
 
-public partial class Program { }
+namespace ShoppingCart.Api
+{
+    public partial class Program
+    {
+    }
+}
