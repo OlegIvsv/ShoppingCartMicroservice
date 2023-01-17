@@ -1,8 +1,8 @@
-using ShoppingCart.Domain.Models;
+using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.ValueObjects;
 using Xunit;
 
-namespace ShoppingCart.Domain.Tests.ModelsTests;
+namespace ShoppingCart.Domain.Tests.EntitiesTests;
 
 public class CartTests
 {
@@ -25,7 +25,7 @@ public class CartTests
         //Arrange
         var cart = CreateTestCart();
         var item = cart.Items.First();
-        int previousQuantity = item.ItemQuantity.Value;
+        var previousQuantity = item.ItemQuantity.Value;
         var newCartItem = CreateTestItem(item.ProductId, "Test Product", 4, 4.00m, 0.01);
         //Act
         cart.PutItem(newCartItem);
@@ -66,36 +66,36 @@ public class CartTests
         var items = new List<CartItem>()
         {
             CartItem.TryCreate(
-                Guid.NewGuid(),
-                ProductTitle.Create("Product_1").Value,
-                Quantity.Create(1).Value,
-                Money.Create(14.00m).Value,
-                Discount.Create(0.05).Value)
-            .Value,
+                    Guid.NewGuid(),
+                    ProductTitle.Create("Product_1").Value,
+                    Quantity.Create(1).Value,
+                    Money.Create(14.00m).Value,
+                    Discount.Create(0.05).Value)
+                .Value,
 
             CartItem.TryCreate(
-                Guid.NewGuid(),
-                ProductTitle.Create("Product_2").Value,
-                Quantity.Create(4).Value,
-                Money.Create(10.50m).Value,
-                Discount.Create(0.00).Value)
-            .Value,
+                    Guid.NewGuid(),
+                    ProductTitle.Create("Product_2").Value,
+                    Quantity.Create(4).Value,
+                    Money.Create(10.50m).Value,
+                    Discount.Create(0.00).Value)
+                .Value,
 
             CartItem.TryCreate(
-                Guid.NewGuid(),
-                ProductTitle.Create("Product_3").Value,
-                Quantity.Create(20).Value,
-                Money.Create(25.50m).Value,
-                Discount.Create(0.10).Value)
-            .Value,
+                    Guid.NewGuid(),
+                    ProductTitle.Create("Product_3").Value,
+                    Quantity.Create(20).Value,
+                    Money.Create(25.50m).Value,
+                    Discount.Create(0.10).Value)
+                .Value,
 
             CartItem.TryCreate(
-                Guid.NewGuid(),
-                ProductTitle.Create("Product_4").Value,
-                Quantity.Create(5).Value,
-                Money.Create(100.00m).Value,
-                Discount.Create(0.00).Value)
-            .Value,
+                    Guid.NewGuid(),
+                    ProductTitle.Create("Product_4").Value,
+                    Quantity.Create(5).Value,
+                    Money.Create(100.00m).Value,
+                    Discount.Create(0.00).Value)
+                .Value
         };
 
         var cart = Cart.TryCreate(Guid.NewGuid()).Value;
