@@ -1,11 +1,9 @@
-using ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests;
+namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 
 public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
 {
-
     [Fact]
     public async Task DeleteShoppingCart_CartExists_ReturnsOk()
     {
@@ -13,7 +11,7 @@ public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
         var cartsInDb = await PrepareDatabase();
         Guid cartId = cartsInDb.Last().Id;
         //Act
-        var response = await _client.DeleteAsync($"api/cart/{cartId}");
+        HttpResponseMessage response = await _client.DeleteAsync($"api/cart/{cartId}");
         //Assert
         AssertOK(response);
     }
@@ -23,9 +21,9 @@ public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
     {
         //Arrange
         await PrepareDatabase();
-        Guid randomId = Guid.NewGuid();
+        var randomId = Guid.NewGuid();
         //Act
-        var response = await _client.DeleteAsync($"api/cart/{randomId}");
+        HttpResponseMessage response = await _client.DeleteAsync($"api/cart/{randomId}");
         //Assert
         AssertNotFound(response);
         AssertJsonProblemUtf8(response);
@@ -37,20 +35,9 @@ public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
         //Arrange
         await PrepareDatabase();
         //Act
-        var response = await _client.DeleteAsync($"api/cart/{Guid.Empty}");
+        HttpResponseMessage response = await _client.DeleteAsync($"api/cart/{Guid.Empty}");
         //Assert
         AssertBadRequest(response);
         AssertJsonProblemUtf8(response);
     }
-
 }
-
-
-
-
-
-
-
-
-
-

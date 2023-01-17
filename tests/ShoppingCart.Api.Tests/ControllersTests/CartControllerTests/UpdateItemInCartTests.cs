@@ -1,10 +1,8 @@
-using MongoDB.Driver;
-using ShoppingCart.Api.Contracts;
-using ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 using System.Net.Http.Json;
+using ShoppingCart.Api.Contracts;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests;
+namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 
 public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
 {
@@ -19,7 +17,7 @@ public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
         Guid productId = Guid.Parse(id);
         CartItemRequest bodyObject = new(productId, 7.00m, "Test Product #7", 7, 0.07);
         //Act
-        var response = await _client.PutAsync(
+        HttpResponseMessage response = await _client.PutAsync(
             $"api/cart/update-item/{cartId}",
             JsonContent.Create(bodyObject));
         //Assert
@@ -32,11 +30,11 @@ public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
     {
         //Arrange
         await PrepareDatabase();
-        Guid cartId = Guid.NewGuid();
+        var cartId = Guid.NewGuid();
         CartItemRequest bodyObjectWithWrongDiscount =
             new(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 1.07);
         //Act
-        var response = await _client.PutAsync(
+        HttpResponseMessage response = await _client.PutAsync(
             $"api/cart/put-item/{cartId}",
             JsonContent.Create(bodyObjectWithWrongDiscount));
         //Assert
@@ -44,13 +42,3 @@ public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
         AssertJsonProblemUtf8(response);
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,14 +1,11 @@
-using Microsoft.AspNetCore.Http;
-using ShoppingCart.Api.Contracts;
-using ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 using System.Net.Http.Json;
+using ShoppingCart.Api.Contracts;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests;
+namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 
 public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
 {
-
     [Fact]
     public async Task CreateShoppingCart_CartAlreadyExists_ReturnsConflictResult()
     {
@@ -16,7 +13,7 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         var cartsInDb = await PrepareDatabase();
         Guid cartId = cartsInDb.Last().Id;
         //Act
-        var response = await _client.PostAsync($"api/cart/{cartId}", null);
+        HttpResponseMessage response = await _client.PostAsync($"api/cart/{cartId}", null);
         //Assert
         AssertCondlict(response);
         AssertJsonProblemUtf8(response);
@@ -27,9 +24,9 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
     {
         //Arrange
         await PrepareDatabase();
-        Guid cartId = Guid.NewGuid();
+        var cartId = Guid.NewGuid();
         //Act
-        var response = await _client.PostAsync($"api/cart/{cartId}", null);
+        HttpResponseMessage response = await _client.PostAsync($"api/cart/{cartId}", null);
         //Assert
         AssertCreated(response);
         AssertJsonUtf8(response);
@@ -44,19 +41,9 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         //Arrange
         await PrepareDatabase();
         //Act
-        var response = await _client.PostAsync($"api/cart/{0}", null);
+        HttpResponseMessage response = await _client.PostAsync($"api/cart/{0}", null);
         //Assert
         AssertBadRequest(response);
         AssertJsonProblemUtf8(response);
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,12 +1,11 @@
 using MongoDB.Driver;
-using ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
+using ShoppingCart.Domain.Entities;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests;
+namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 
 public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
 {
-
     [Fact]
     public async Task ClearShoppingCart_CartExists_ReturnsOk()
     {
@@ -14,10 +13,10 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
         var cartsInDb = await PrepareDatabase();
         Guid cartId = cartsInDb.First().Id;
         //Act
-        var response = await _client.PutAsync($"api/cart/clear/{cartId}", null);
+        HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{cartId}", null);
         //Assert
         AssertOK(response);
-        var cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
+        Cart? cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
         Assert.Equal(0, cart.Items.Count);
     }
 
@@ -26,9 +25,9 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
     {
         //Arrange
         await PrepareDatabase();
-        Guid randomId = Guid.NewGuid();
+        var randomId = Guid.NewGuid();
         //Act
-        var response = await _client.PutAsync($"api/cart/clear/{randomId}", null);
+        HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{randomId}", null);
         //Assert
         AssertNotFound(response);
         AssertJsonProblemUtf8(response);
@@ -40,19 +39,9 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
         //Arrange
         await PrepareDatabase();
         //Act
-        var response = await _client.PutAsync($"api/cart/clear/{Guid.Empty}", null);
+        HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{Guid.Empty}", null);
         //Assert
         AssertBadRequest(response);
         AssertJsonProblemUtf8(response);
     }
 }
-
-
-
-
-
-
-
-
-
-

@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Mongo2Go;
 using MongoDB.Driver;
-using ShoppingCart.Domain.Models;
+using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.ValueObjects;
-using ShoppingCart.Infrastructure.DataAccess;
-using System.Net;
+using ShoppingCart.Infrastructure.DataAccess.MongoDb;
 using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
@@ -21,11 +21,11 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     public CartsControllerIntegrationTestsBase()
     {
         _runner = MongoDbRunner.Start();
-        string databaseName = $"testdb_{new Random().Next()}";
-        string collectionName = $"testcoll_{new Random().Next()}";
+        var databaseName = $"testdb_{new Random().Next()}";
+        var collectionName = $"testcoll_{new Random().Next()}";
 
 
-        var settings = new MongoSettings()
+        var settings = new MongoSettings
         {
             ConnectionString = _runner.ConnectionString,
             Database = databaseName,
@@ -34,10 +34,7 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         var appFactory = new WebApplicationFactory<Program>();
         appFactory = appFactory.WithWebHostBuilder(builder =>
         {
-            builder.ConfigureTestServices(services =>
-            {
-                services.AddSingleton(Options.Create(settings));
-            });
+            builder.ConfigureTestServices(services => { services.AddSingleton(Options.Create(settings)); });
             // Create an instance of repo to initialize serializators
             //TODO: find another way to initialize serializators before filling test DB with data
             var mongoRepo = new MongoShoppingCartRepository(Options.Create(settings));
@@ -46,8 +43,8 @@ public class CartsControllerIntegrationTestsBase : IDisposable
 
 
         _cartCollection = new MongoClient(_runner.ConnectionString)
-               .GetDatabase(databaseName)
-               .GetCollection<Cart>(collectionName);
+            .GetDatabase(databaseName)
+            .GetCollection<Cart>(collectionName);
     }
 
     protected async Task<List<Cart>> PrepareDatabase()
@@ -71,27 +68,27 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     protected CartItem CreateTestItem(string id, string title, int quantity, decimal price, double discount)
     {
         return CartItem.TryCreate(
-               Guid.Parse(id),
-               ProductTitle.Create(title).Value,
-               Quantity.Create(quantity).Value,
-               Money.Create(price).Value,
-               Discount.Create(discount).Value)
-           .Value;
+                Guid.Parse(id),
+                ProductTitle.Create(title).Value,
+                Quantity.Create(quantity).Value,
+                Money.Create(price).Value,
+                Discount.Create(discount).Value)
+            .Value;
     }
 
     protected async Task AssertItemIsInDb(Guid cartId, Guid productId, int expectedQuantity)
     {
-        var cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
-        bool result = cart.Items.Any(
+        Cart? cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
+        var result = cart.Items.Any(
             item => item.ProductId == productId
-            && item.ItemQuantity.Value == expectedQuantity);
+                    && item.ItemQuantity.Value == expectedQuantity);
         Assert.True(result, "Test database doesn't contain a product with these Id and Quantity");
     }
 
     protected async Task AssertItemIsNotInDb(Guid cartId, Guid productId)
     {
-        var cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
-        bool result = cart.Items.Any(item => item.ProductId == productId);
+        Cart? cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
+        var result = cart.Items.Any(item => item.ProductId == productId);
         Assert.False(result, "Test database contains a product with these Id");
     }
 
@@ -123,26 +120,19 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     protected void AssertJsonUtf8(HttpResponseMessage responseMessage)
     {
         Assert.Equal(
-           "application/json; charset=utf-8",
-           responseMessage.Content.Headers.ContentType.ToString());
+            "application/json; charset=utf-8",
+            responseMessage.Content.Headers.ContentType.ToString());
     }
 
     protected void AssertJsonProblemUtf8(HttpResponseMessage responseMessage)
     {
         Assert.Equal(
-           "application/problem+json; charset=utf-8",
-           responseMessage.Content.Headers.ContentType.ToString());
+            "application/problem+json; charset=utf-8",
+            responseMessage.Content.Headers.ContentType.ToString());
     }
 
-    public void Dispose() => _runner.Dispose();
+    public void Dispose()
+    {
+        _runner.Dispose();
+    }
 }
-
-
-
-
-
-
-
-
-
-
