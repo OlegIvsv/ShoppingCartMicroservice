@@ -65,7 +65,12 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         return testCarts;
     }
 
-    protected CartItem CreateTestItem(string id, string title, int quantity, decimal price, double discount)
+    protected CartItem CreateTestItem(
+        string id, 
+        string title, 
+        int quantity, 
+        decimal price, 
+        double discount)
     {
         return CartItem.TryCreate(
                 Guid.Parse(id),
@@ -76,6 +81,23 @@ public class CartsControllerIntegrationTestsBase : IDisposable
             .Value;
     }
 
+    protected object GetTestItemBody(
+        Guid productId,
+        decimal unitPrice,
+        string productTitle,
+        int itemQuantity,
+        double discount)
+    {
+        return new
+        {
+            productId = productId,
+            unitPrice = unitPrice,
+            productTitle = productTitle,
+            itemQuantity = itemQuantity,
+            discount = discount
+        };
+    }
+    
     protected async Task AssertItemIsInDb(Guid cartId, Guid productId, int expectedQuantity)
     {
         Cart? cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();

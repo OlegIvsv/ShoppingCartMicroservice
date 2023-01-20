@@ -8,7 +8,7 @@ namespace ShoppingCart.Api.Contracts.ContractBinders;
 public class CartItemBinder : IModelBinder
 {
     private ModelBindingContext _bindingContext;
-
+    
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
         _bindingContext = bindingContext;
@@ -56,4 +56,11 @@ public class CartItemBinder : IModelBinder
         else
             _bindingContext.Result = ModelBindingResult.Success(cartItemResult.Value);
     }
+
+    private record CartItemRequest(
+        Guid ProductId,
+        decimal UnitPrice,
+        string ProductTitle,
+        int ItemQuantity,
+        double Discount);
 }

@@ -15,7 +15,7 @@ public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
         var cartsInDb = await PrepareDatabase();
         Guid cartId = cartsInDb.First().Id;
         Guid productId = Guid.Parse(id);
-        CartItemRequest bodyObject = new(productId, 7.00m, "Test Product #7", 7, 0.07);
+        var bodyObject = GetTestItemBody(productId, 7.00m, "Test Product #7", 7, 0.07);
         //Act
         HttpResponseMessage response = await _client.PutAsync(
             $"api/cart/update-item/{cartId}",
@@ -31,8 +31,8 @@ public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
         //Arrange
         await PrepareDatabase();
         var cartId = Guid.NewGuid();
-        CartItemRequest bodyObjectWithWrongDiscount =
-            new(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 1.07);
+        var bodyObjectWithWrongDiscount =
+            GetTestItemBody(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 1.07);
         //Act
         HttpResponseMessage response = await _client.PutAsync(
             $"api/cart/put-item/{cartId}",

@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\ShoppingCart.Interfaces\ShoppingCart.Interfaces.csproj"/>
-        <ProjectReference Include="..\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj"/>
+        <ProjectReference Include="..\ShoppingCart.Interfaces\ShoppingCart.Interfaces.csproj" />
+        <ProjectReference Include="..\ShoppingCart.Infrastructure\ShoppingCart.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
