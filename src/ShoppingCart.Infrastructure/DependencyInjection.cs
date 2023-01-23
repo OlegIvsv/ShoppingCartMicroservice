@@ -12,7 +12,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         ConfigurationManager configurationManager)
     {
-        services.AddScoped<IShoppingCartRepository, MongoShoppingCartRepository>();
+        services.AddSingleton<IShoppingCartRepository, MongoShoppingCartRepository>();
 
         var mongoSettings = new MongoSettings();
         configurationManager.Bind(MongoSettings.SectionName, mongoSettings);
