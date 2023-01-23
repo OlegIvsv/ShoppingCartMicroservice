@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
 using ShoppingCart.Api.Contracts.ContractAttributes;
+using ShoppingCart.Api.Contracts.ContractBinders;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Interfaces.Interfaces;
 
@@ -82,7 +83,7 @@ public class CartController : ControllerBase
     [ProducesResponseType(200)]
     public async Task<IActionResult> PutItemToCart( 
         [GuidId] Guid customerId, 
-        [FromBody] CartItem? item)
+        [FromBody] CartItem item)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
