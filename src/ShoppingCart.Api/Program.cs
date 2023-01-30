@@ -6,13 +6,11 @@ var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddApiPresentation(builder.Host);
     builder.Services.AddInfrastructure(builder.Configuration);
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
 }
-
 
 var app = builder.Build();
 {
+    app.UseHttpLogging();
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
