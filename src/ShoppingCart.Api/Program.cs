@@ -1,4 +1,5 @@
 using ShoppingCart.Api;
+using ShoppingCart.Api.Middleware;
 using ShoppingCart.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ var app = builder.Build();
         app.UseSwaggerUI();
     }
 
+    app.UseMiddleware<ErrorHandlingMiddleware>();
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();
@@ -26,7 +28,5 @@ var app = builder.Build();
 
 namespace ShoppingCart.Api
 {
-    public partial class Program
-    {
-    }
+    public partial class Program { }
 }
