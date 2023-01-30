@@ -20,7 +20,7 @@
             "productTitle": "Mango",
             "unitPrice": 54.00,
             "discount": 0.05,
-            "quantity" : 7,
+            "itemQuantity" : 7,
         }
     ]
 }
@@ -28,8 +28,7 @@
 
 
 
-## API 🪟
-
+## API 🪟 *v1.0*
 
 
 
@@ -46,6 +45,8 @@
 
  ***Output:***
 
+ - *200* status and cart in case of success, error code and problem details otherwise
+
  ```json
 {
     "id": "00000000-0000-0000-0000-000000000000",
@@ -54,7 +55,7 @@
         {
              "id": "00000000-0000-0000-0000-000000000000",
             "productId": "00000000-0000-0000-0000-000000000000",
-            "quantity": 1,
+            "itemQuantity": 1,
             "productTitle": "text",
             "unitPrice": 0.00,
             "discount": 0.00
@@ -79,8 +80,7 @@ POST api/cart/{customerId}
 
  ***Output:***
 
-- 2xx status code if was created successfully, 4xx otherwise
-
+- *200* status code if was created successfully, error code and problem details otherwise
 
 
 
@@ -94,11 +94,11 @@ Deletes empty shopping carts for the user.
 
  ***Input:***
 
-    - customerIdd
+    - customerId
 
  ***Output:***
 
-2XX status code if the cart has been deleted successfully, 4XX otherwise
+*200* status code if the cart has been deleted successfully, error code and problem details otherwise
 
 
 
@@ -115,7 +115,7 @@ Clears shopping cart.
 
  ***Output:***
 
-2XX status code if the cart has been cleared successfully, 4XX otherwise
+*200* status code if the cart has been cleared successfully, error code and problem details otherwise
 
 
 
@@ -132,7 +132,7 @@ Puts product to shoping cart. If there is an item for this product in the cart, 
  {
     "id": "00000000-0000-0000-0000-000000000000",
     "productId": "00000000-0000-0000-0000-000000000000",
-    "quantity": 1,
+    "itemQuantity": 1,
     "productTitle": "text",
     "unitPrice": 0.00,
     "discount": 0.00
@@ -140,7 +140,7 @@ Puts product to shoping cart. If there is an item for this product in the cart, 
  ```
  ***Output:***
 
-2XX status code if the cart has been cleared successfully, 4XX otherwise
+*200* status code if the cart has been cleared successfully, error code and problem details otherwise
 
 
 
@@ -157,7 +157,7 @@ Updates product quantity or adds the product to the customer's shopping cart if 
  {
     "id": "00000000-0000-0000-0000-000000000000",
     "productId": "00000000-0000-0000-0000-000000000000",
-    "quantity": 1,
+    "itemQuantity": 1,
     "productTitle": "text",
     "unitPrice": 0.00,
     "discount": 0.00
@@ -166,7 +166,7 @@ Updates product quantity or adds the product to the customer's shopping cart if 
  
  ***Output:***
 
-2XX status code if the cart has been cleared successfully, 4XX otherwise
+*200* status code if the cart has been cleared successfully, error code and problem details otherwise
 
 
 
@@ -184,6 +184,6 @@ Removes item from shopping cart.
 
  ***Output:***
 
-2XX status code if the cart has been cleared successfully, 4XX otherwise
+*200* status code if the cart has been cleared successfully, error code and problem details otherwise
 
 
