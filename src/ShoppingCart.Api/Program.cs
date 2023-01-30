@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using ShoppingCart.Api;
 using ShoppingCart.Api.Middleware;
 using ShoppingCart.Infrastructure;
@@ -11,10 +12,20 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.UseHttpLogging();
+
+    var apiVersionDescriptionProvider = app.Services
+        .GetRequiredService<IApiVersionDescriptionProvider>();
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
-        app.UseSwaggerUI();
+        app.UseSwaggerUI(options =>
+        {
+            foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse())
+            {
+                options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName.ToUpperInvariant());
+            }
+        });
     }
 
     app.UseMiddleware<ErrorHandlingMiddleware>();
