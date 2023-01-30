@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
 using ShoppingCart.Api.Contracts.ContractAttributes;
-using ShoppingCart.Api.Contracts.ContractBinders;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Interfaces.Interfaces;
 
-namespace ShoppingCart.Api.Controllers;
+namespace ShoppingCart.Api.Controllers.v1;
 
 [ApiController]
+[ApiVersion("1.0")]
 [Route("api/[controller]")]
 public class CartController : ControllerBase
 {
