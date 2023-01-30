@@ -4,7 +4,7 @@ using ShoppingCart.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Services.AddApiPresentation();
+    builder.Services.AddApiPresentation(builder.Host);
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
