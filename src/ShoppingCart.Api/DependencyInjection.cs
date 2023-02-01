@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.HttpLogging;
+﻿using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -6,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using ShoppingCart.Api.Contracts.ContractBinders;
-using ShoppingCart.Api.Middleware;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ShoppingCart.Api;
@@ -19,6 +19,8 @@ public static class DependencyInjection
         {
             loggerConfig.ReadFrom.Configuration(hostingContext.Configuration);
         });
+        /*  By default details is shown only in the Development environment */
+        services.AddProblemDetails();
         services.AddHttpLogging(options =>
         {
             options.LoggingFields = HttpLoggingFields.All;
@@ -51,7 +53,6 @@ public static class DependencyInjection
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
         services.ConfigureOptions<ConfigureSwaggerOptions>();
-        services.AddTransient<ErrorHandlingMiddleware>();
         
         return services;
     }

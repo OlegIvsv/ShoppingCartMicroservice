@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Hellang.Middleware.ProblemDetails;
 using ShoppingCart.Api;
-using ShoppingCart.Api.Middleware;
 using ShoppingCart.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    app.UseProblemDetails();
     app.UseHttpLogging();
 
     var apiVersionDescriptionProvider = app.Services
