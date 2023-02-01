@@ -12,23 +12,7 @@ var app = builder.Build();
 {
     app.UseProblemDetails();
     app.UseHttpLogging();
-
-    var apiVersionDescriptionProvider = app.Services
-        .GetRequiredService<IApiVersionDescriptionProvider>();
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI(options =>
-        {
-            foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse())
-            {
-                options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                    description.GroupName.ToUpperInvariant());
-            }
-        });
-    }
-
-    app.UseMiddleware<ErrorHandlingMiddleware>();
+    app.UseSwaggerUIInDev();
     app.UseHttpsRedirection();
     app.UseAuthorization();
     app.MapControllers();
