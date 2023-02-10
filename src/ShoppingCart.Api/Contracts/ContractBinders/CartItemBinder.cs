@@ -29,6 +29,7 @@ public class CartItemBinder : IModelBinder
         var quantityResult = Quantity.Create(cartItemRequest.ItemQuantity);
         var unitPriceResult = Money.Create(cartItemRequest.UnitPrice);
         var discountResult = Discount.Create(cartItemRequest.Discount);
+        var imageUrlResult = ImageUrl.Create(cartItemRequest.ImageUrl);
 
         if (titleResult.IsFailed)
             ctx.ModelState.AddModelError("ProductTitle", titleResult.Errors.First().Message);
@@ -38,6 +39,8 @@ public class CartItemBinder : IModelBinder
             ctx.ModelState.AddModelError("UnitPrice", unitPriceResult.Errors.First().Message);
         if (discountResult.IsFailed)
             ctx.ModelState.AddModelError("Discount", discountResult.Errors.First().Message);
+        if (imageUrlResult.IsFailed)
+            ctx.ModelState.AddModelError("ImageUrl",imageUrlResult.Errors.First().Message);
         if (ctx.ModelState.ErrorCount != 0)
             return;
 
@@ -46,7 +49,8 @@ public class CartItemBinder : IModelBinder
             titleResult.Value,
             quantityResult.Value,
             unitPriceResult.Value,
-            discountResult.Value);
+            discountResult.Value,
+            imageUrlResult.Value);
 
         if (cartItemResult.IsFailed)
             ctx.ModelState.AddModelError("CartItem", cartItemResult.Errors.First().Message);
@@ -59,5 +63,6 @@ public class CartItemBinder : IModelBinder
         decimal UnitPrice,
         string ProductTitle,
         int ItemQuantity,
-        double Discount);
+        double Discount,
+        string ImageUrl);
 }
