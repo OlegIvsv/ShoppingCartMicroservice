@@ -21,6 +21,7 @@
             "unitPrice": 54.00,
             "discount": 0.05,
             "itemQuantity" : 7,
+            "imageUrl": "https://example.com/images/example.jpg"
         }
     ]
 }
@@ -58,7 +59,8 @@
             "itemQuantity": 1,
             "productTitle": "text",
             "unitPrice": 0.00,
-            "discount": 0.00
+            "discount": 0.00,
+            "imageUrl": "https://example.com/images/example.jpg"
         }
     ]
 }
@@ -80,7 +82,7 @@ POST api/cart/{customerId}
 
  ***Output:***
 
-- *200* status code if was created successfully, error code and problem details otherwise
+- *200* status code if was created successfully, error code and problem details otherwise and just created empry cart
 
 
 
@@ -135,7 +137,8 @@ Puts product to shoping cart. If there is an item for this product in the cart, 
     "itemQuantity": 1,
     "productTitle": "text",
     "unitPrice": 0.00,
-    "discount": 0.00
+    "discount": 0.00,
+    "imageUrl": "https://example.com/images/example.jpg"
 }
  ```
  ***Output:***
@@ -160,7 +163,8 @@ Updates product quantity or adds the product to the customer's shopping cart if 
     "itemQuantity": 1,
     "productTitle": "text",
     "unitPrice": 0.00,
-    "discount": 0.00
+    "discount": 0.00,
+    "imageUrl": "https://example.com/images/example.jpg"
 }
  ```
  
@@ -173,7 +177,7 @@ Updates product quantity or adds the product to the customer's shopping cart if 
 #### 🔑 Remove item from shopping cart
 
 ```js
-api/cart/remove-item/{customerId}?{productId}
+PUT api/cart/remove-item/{customerId}?{productId}
 ```
 Removes item from shopping cart.
 
