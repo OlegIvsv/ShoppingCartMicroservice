@@ -12,13 +12,15 @@ public sealed class CartItem : Entity<CartItem>
     public Money UnitPrice { get; }
     public Quantity ItemQuantity { get; private set; }
     public Discount Discount { get; }
+    public ImageUrl Image { get; }
 
     private CartItem(
         Guid productId,
         ProductTitle productTitle,
         Quantity quantity,
         Money unitPrice,
-        Discount discount)
+        Discount discount,
+        ImageUrl imageUrl)
     {
         if (productTitle is null || quantity is null ||
             unitPrice is null || discount is null)
@@ -29,6 +31,7 @@ public sealed class CartItem : Entity<CartItem>
         UnitPrice = unitPrice;
         ItemQuantity = quantity;
         Discount = discount;
+        Image = imageUrl;
     }
 
     public static Result<CartItem> TryCreate(
@@ -36,11 +39,12 @@ public sealed class CartItem : Entity<CartItem>
         ProductTitle productTitle,
         Quantity quantity,
         Money unitPrice,
-        Discount discount)
+        Discount discount,
+        ImageUrl imageUrl)
     {
         if (productId == Guid.Empty)
             return Result.Fail(new InvalidIdValueError(productId));
-        return new CartItem(productId, productTitle, quantity, unitPrice, discount);
+        return new CartItem(productId, productTitle, quantity, unitPrice, discount, imageUrl);
     }
 
     public static CartItem Create(
@@ -48,11 +52,12 @@ public sealed class CartItem : Entity<CartItem>
         ProductTitle productTitle,
         Quantity quantity,
         Money unitPrice,
-        Discount discount)
+        Discount discount,
+        ImageUrl imageUrl)
     {
         if (productId == Guid.Empty)
             throw new ArgumentException("Invalid id value", nameof(productId));
-        return new CartItem(productId, productTitle, quantity, unitPrice, discount);
+        return new CartItem(productId, productTitle, quantity, unitPrice, discount, imageUrl);
     }
 
     public void CorrectQuantityWith(Quantity quantityChange)
