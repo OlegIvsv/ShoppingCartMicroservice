@@ -7,7 +7,7 @@ public record CartItemResponse(
     Guid ProductId,
     decimal UnitPrice,
     string ProductTitle,
-    int Quantity,
+    int ItemQuantity,
     double Discount,
     string ImageUrl)
 {
