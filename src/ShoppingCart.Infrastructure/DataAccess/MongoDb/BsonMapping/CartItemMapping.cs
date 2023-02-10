@@ -14,6 +14,7 @@ internal class CartItemMapping
             map.MapField(item => item.UnitPrice).SetElementName("unitPrice");
             map.MapField(item => item.ItemQuantity).SetElementName("quantity");
             map.MapField(item => item.Discount).SetElementName("discount");
+            map.MapField(item => item.Image).SetElementName("imageUrl");
 
             string factoryMethodName = nameof(Cart.Create);
             var methodInfo = typeof(CartItem).GetMethod(factoryMethodName);
@@ -23,7 +24,8 @@ internal class CartItemMapping
                 "ProductTitle",
                 "ItemQuantity",
                 "UnitPrice",
-                "Discount");
+                "Discount",
+                "Image");
         });
     }
 }
