@@ -65,37 +65,14 @@ public class CartTests
     {
         var items = new List<CartItem>()
         {
-            CartItem.TryCreate(
-                    Guid.NewGuid(),
-                    ProductTitle.Create("Product_1").Value,
-                    Quantity.Create(1).Value,
-                    Money.Create(14.00m).Value,
-                    Discount.Create(0.05).Value)
-                .Value,
-
-            CartItem.TryCreate(
-                    Guid.NewGuid(),
-                    ProductTitle.Create("Product_2").Value,
-                    Quantity.Create(4).Value,
-                    Money.Create(10.50m).Value,
-                    Discount.Create(0.00).Value)
-                .Value,
-
-            CartItem.TryCreate(
-                    Guid.NewGuid(),
-                    ProductTitle.Create("Product_3").Value,
-                    Quantity.Create(20).Value,
-                    Money.Create(25.50m).Value,
-                    Discount.Create(0.10).Value)
-                .Value,
-
-            CartItem.TryCreate(
-                    Guid.NewGuid(),
-                    ProductTitle.Create("Product_4").Value,
-                    Quantity.Create(5).Value,
-                    Money.Create(100.00m).Value,
-                    Discount.Create(0.00).Value)
-                .Value
+            CreateTestItem(
+                    Guid.NewGuid(), "Product_1", 1, 14.00m, 0.05),
+            CreateTestItem(
+                Guid.NewGuid(), "Product_2", 4, 10.50m, 0.00),
+            CreateTestItem(
+                Guid.NewGuid(), "Product_3", 20, 25.50m, 0.10),
+            CreateTestItem(
+                Guid.NewGuid(), "Product_4", 5, 100.00m, 0.00)
         };
 
         var cart = Cart.TryCreate(Guid.NewGuid()).Value;
@@ -103,14 +80,21 @@ public class CartTests
         return cart;
     }
 
-    private CartItem CreateTestItem(Guid productId, string title, int quantity, decimal price, double discount)
+    private CartItem CreateTestItem(
+        Guid productId, 
+        string title, 
+        int quantity, 
+        decimal price, 
+        double discount,
+        string imageUrl = "https://example.com/images/exaple.jpg")
     {
         return CartItem.TryCreate(
                 productId,
                 ProductTitle.Create(title).Value,
                 Quantity.Create(quantity).Value,
                 Money.Create(price).Value,
-                Discount.Create(discount).Value)
+                Discount.Create(discount).Value,
+                ImageUrl.Create(imageUrl).Value)
             .Value;
     }
 }
