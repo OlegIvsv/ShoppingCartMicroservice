@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Mime;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.ValueObjects;
@@ -9,6 +10,8 @@ public class CartItemBinder : IModelBinder
 {
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
+        if(HandleIfNotJson(bindingContext))
+            return;
         try
         {
             var itemRequest = await bindingContext.HttpContext.Request
@@ -22,6 +25,20 @@ public class CartItemBinder : IModelBinder
                 $"{ex.InnerException?.Message} The following json element caused a problem: {ex.Path}");
         }
     }
+
+    private bool HandleIfNotJson(ModelBindingContext ctx)
+    {
+        string contentType = ctx.HttpContext.Request.ContentType;
+        bool isJson = contentType?.StartsWith(MediaTypeNames.Application.Json) ?? false;
+
+        if (!isJson)
+        {
+            var ex = new UnsupportedContentTypeException("Unsupported media type");
+            ctx.ModelState.AddModelError("Exception", ex, ctx.ModelMetadata);
+            return true;
+        }
+        return false;
+    } 
 
     private void SetModelFromDTO(CartItemRequest cartItemRequest, ModelBindingContext ctx)
     {
@@ -65,4 +82,5 @@ public class CartItemBinder : IModelBinder
         int ItemQuantity,
         double Discount,
         string ImageUrl);
+
 }
