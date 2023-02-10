@@ -70,14 +70,16 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         string title, 
         int quantity, 
         decimal price, 
-        double discount)
+        double discount,
+        string imageUrl = "https://example.com/images/exaple.jpg")
     {
         return CartItem.TryCreate(
                 Guid.Parse(id),
                 ProductTitle.Create(title).Value,
                 Quantity.Create(quantity).Value,
                 Money.Create(price).Value,
-                Discount.Create(discount).Value)
+                Discount.Create(discount).Value,
+                ImageUrl.Create(imageUrl).Value)
             .Value;
     }
 
@@ -86,7 +88,8 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         decimal unitPrice,
         string productTitle,
         int itemQuantity,
-        double discount)
+        double discount,
+        string imageUrl = "https://example.com/images/exaple.jpg")
     {
         return new
         {
@@ -94,7 +97,8 @@ public class CartsControllerIntegrationTestsBase : IDisposable
             unitPrice = unitPrice,
             productTitle = productTitle,
             itemQuantity = itemQuantity,
-            discount = discount
+            discount = discount,
+            imageUrl = imageUrl
         };
     }
     

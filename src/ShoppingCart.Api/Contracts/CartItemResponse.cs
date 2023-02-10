@@ -7,8 +7,9 @@ public record CartItemResponse(
     Guid ProductId,
     decimal UnitPrice,
     string ProductTitle,
-    int Quantity,
-    double Discount)
+    int ItemQuantity,
+    double Discount,
+    string ImageUrl)
 {
     public static CartItemResponse FromEntity(CartItem item)
     {
@@ -18,6 +19,7 @@ public record CartItemResponse(
             item.UnitPrice.Value,
             item.ProductTitle.Value,
             item.ItemQuantity.Value,
-            item.Discount.Value);
+            item.Discount.Value,
+            item.Image.Value);
     }
 }

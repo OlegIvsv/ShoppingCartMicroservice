@@ -4,9 +4,10 @@ using ShoppingCart.Api.Contracts.ContractAttributes;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Interfaces.Interfaces;
 
-namespace ShoppingCart.Api.Controllers;
+namespace ShoppingCart.Api.Controllers.v1;
 
 [ApiController]
+[ApiVersion("1.0")]
 [Route("api/[controller]")]
 public class CartController : ControllerBase
 {
@@ -82,7 +83,7 @@ public class CartController : ControllerBase
     [ProducesResponseType(200)]
     public async Task<IActionResult> PutItemToCart( 
         [GuidId] Guid customerId, 
-        [FromBody] CartItem? item)
+        [FromBody] CartItem item)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);

@@ -26,6 +26,7 @@ public class MongoShoppingCartRepository : IShoppingCartRepository
         BsonSerializer.RegisterSerializer<Quantity>(new QuantitySerializer());
         BsonSerializer.RegisterSerializer<Discount>(new DiscountSerializer());
         BsonSerializer.RegisterSerializer<ProductTitle>(new ProductTitleSerializer());
+        BsonSerializer.RegisterSerializer<ImageUrl>(new ImageUrlSerializer());
 
         new CartItemMapping().RegisterMap();
         new CartMapping().RegisterMap();
