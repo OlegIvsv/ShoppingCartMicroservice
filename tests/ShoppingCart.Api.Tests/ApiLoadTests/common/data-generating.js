@@ -6,7 +6,8 @@ export function createTestItem() {
         productTitle: "Some Product Title",
         itemQuantity: randomIntBetween(1, 10),
         unitPrice: Math.random() * (1000 - 0.1) + 0.1,
-        discount: Math.random() * 0.7
+        discount: Math.random() * 0.7,
+        imageUrl: "https://example.com/images/example.jpg" 
     };
 }
 

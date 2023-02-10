@@ -1,5 +1,5 @@
 import uuid
-from random_titles import random_title
+from data_generators import random_title, random_image
 from bson import Decimal128 as MongoDecimal
 import random
 
@@ -13,6 +13,7 @@ class RandomCartItem:
         self.discount = random.uniform(0, 0.7)
         self.id = uuid.uuid4()
         self.product_id = uuid.uuid4()
+        self.imageUrl = random_image()
 
     def to_mongo_document(self) -> dict:
         return {
@@ -21,7 +22,8 @@ class RandomCartItem:
             "productTitle": self.title,
             "unitPrice": self.price,
             "quantity": self.quantity,
-            "discount": round(self.discount, 2)
+            "discount": round(self.discount, 2),
+            "imageUrl": self.imageUrl
         }
 
 
