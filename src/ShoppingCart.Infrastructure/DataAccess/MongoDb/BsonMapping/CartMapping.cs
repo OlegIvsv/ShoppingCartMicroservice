@@ -9,11 +9,13 @@ internal class CartMapping
     {
         BsonClassMap.RegisterClassMap<Cart>(map =>
         {
-            map.MapField(cart => cart.Items).SetElementName("items");
+            map.MapProperty(cart => cart.Items).SetElementName("items");
+            map.MapProperty(cart => cart.IsAnonymous).SetElementName("isAnonymous").SetDefaultValue(false);
+            map.MapProperty(cart => cart.LastModifiedDate).SetElementName("lastModifiedDate");
 
             string factoryMethodName = nameof(Cart.Create);
             var methodInfo = typeof(Cart).GetMethod(factoryMethodName);
-            map.MapFactoryMethod(methodInfo, "Id", "Items");
+            map.MapFactoryMethod(methodInfo, "Id", "IsAnonymous", "Items");
         });
     }
 }
