@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using MongoDB.Driver;
 using ShoppingCart.Api.Contracts;
 using Xunit;
 
@@ -13,7 +14,8 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         var cartsInDb = await PrepareDatabase();
         Guid cartId = cartsInDb.Last().Id;
         //Act
-        HttpResponseMessage response = await _client.PostAsync($"api/cart/{cartId}", null);
+        HttpResponseMessage response = 
+            await _client.PostAsync($"api/cart/{cartId}?isAnonymous=true", null);
         //Assert
         AssertCondlict(response);
         AssertJsonProblemUtf8(response);
@@ -26,7 +28,8 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         await PrepareDatabase();
         var cartId = Guid.NewGuid();
         //Act
-        HttpResponseMessage response = await _client.PostAsync($"api/cart/{cartId}", null);
+        HttpResponseMessage response = 
+            await _client.PostAsync($"api/cart/{cartId}?isAnonymous=true", null);
         //Assert
         AssertCreated(response);
         AssertJsonUtf8(response);
@@ -41,9 +44,33 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         //Arrange
         await PrepareDatabase();
         //Act
-        HttpResponseMessage response = await _client.PostAsync($"api/cart/{0}", null);
+        HttpResponseMessage response = 
+            await _client.PostAsync($"api/cart/{0}?isAnonymous=true", null);
         //Assert
         AssertBadRequest(response);
         AssertJsonProblemUtf8(response);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CreateShoppingCart_AnonymousCart_ReturnsCreatedWithAnonymousCart(
+        bool shouldCreateAnonymouse)
+    {
+        //Arrange
+        await PrepareDatabase();
+        var cartId = Guid.NewGuid();
+        string uri = $"api/cart/{cartId}?isAnonymous={shouldCreateAnonymouse}";
+        //Act
+        HttpResponseMessage response = await _client.PostAsync(uri, null);
+        //Assert
+        AssertCreated(response);
+        AssertJsonUtf8(response);
+        var responseBody = await response.Content.ReadFromJsonAsync<CartResponse>();
+        var cartInDb = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
+        Assert.NotNull(responseBody);
+        Assert.NotNull(cartInDb);
+        Assert.Equal(shouldCreateAnonymouse, responseBody.IsAnonymous);
+        Assert.Equal(shouldCreateAnonymouse, cartInDb.IsAnonymous);
     }
 }

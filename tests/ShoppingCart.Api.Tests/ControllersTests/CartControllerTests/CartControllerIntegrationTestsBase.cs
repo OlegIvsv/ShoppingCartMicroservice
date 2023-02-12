@@ -51,9 +51,18 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     {
         var testCarts = new List<Cart>
         {
-            Cart.TryCreate(Guid.Parse("008927df-3b96-4707-ad84-4e689d634987")).Value,
-            Cart.TryCreate(Guid.Parse("35454152-4895-42d7-b887-f274deff210d")).Value,
-            Cart.TryCreate(Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2")).Value
+            Cart.TryCreate(
+                Guid.Parse("008927df-3b96-4707-ad84-4e689d634987"),
+                true)
+                .Value,
+            Cart.TryCreate(
+                Guid.Parse("35454152-4895-42d7-b887-f274deff210d"),
+                false)
+                .Value,
+            Cart.TryCreate(
+                Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2"),
+                true)
+                .Value
         };
 
         testCarts[0].PutItem(
