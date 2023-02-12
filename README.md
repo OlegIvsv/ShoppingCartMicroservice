@@ -13,6 +13,8 @@
 ```json
 {
     "id": "f434c23b-cdc0-436f-832a-08541b3c3ae1",
+    "lastModificatedDate": "2023-01-01T100:00:00.000+00:00",
+    "isAnonymous": true,
     "items": [
         {
             "id": "a90da8ee-af2a-4d8e-863c-d384c82650ea",
@@ -50,11 +52,12 @@
 
  ```json
 {
-    "id": "00000000-0000-0000-0000-000000000000",
     "customerId": "00000000-0000-0000-0000-000000000000",
+    "lastModificatedDate": "2023-01-01T100:00:00.000+00:00",
+    "isAnonymous": true,
     "items": [
         {
-             "id": "00000000-0000-0000-0000-000000000000",
+            "id": "00000000-0000-0000-0000-000000000000",
             "productId": "00000000-0000-0000-0000-000000000000",
             "itemQuantity": 1,
             "productTitle": "text",
@@ -72,13 +75,14 @@
  #### 🔑 Create a new shopping cart
  
  ```js
-POST api/cart/{customerId}
+POST api/cart/{customerId}?{isAnonymous}
 ```
  Creates empty shopping carts for new users.
 
  ***Input:***
 
 - **customerId**
+- **isAnonymous** - specifies if the cart is anonymous with a bool value
 
  ***Output:***
 
