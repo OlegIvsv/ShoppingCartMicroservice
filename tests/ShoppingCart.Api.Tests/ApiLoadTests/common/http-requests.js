@@ -29,7 +29,7 @@ export function clearCart(host, cartId) {
 }
 
 export function createCart(host, cartId) {
-    const createRes = http.post(`${host}/api/Cart/${cartId}`);
+    const createRes = http.post(`${host}/api/Cart/${cartId}?isAnonymous=false`);
     check(createRes, {
         'cart created with status 201': r => r.status === 201
     });
