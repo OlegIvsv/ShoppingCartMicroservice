@@ -1,5 +1,6 @@
 version: "3"
 name: shopping-cart-ms
+
 services:
   app:
     container_name: shopping-cart-api
@@ -10,7 +11,7 @@ services:
     
   mongodb:
     container_name: mongodb
-    image: mongo
+    image: shopping-cart-ms-mongodb
     ports:
       - 27017:27017
     environment:
