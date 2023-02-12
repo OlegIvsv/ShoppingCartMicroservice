@@ -33,9 +33,19 @@ public class MongoShoppingCartRepository : IShoppingCartRepository
     }
 
 
-    public async Task Add(Cart cart)
+    public async Task Save(Cart cart)
     {
-        await _cartsCollection.InsertOneAsync(cart);
+        var updateDefinition = Builders<Cart>.Update
+            .Set(c => c.Items, cart.Items)
+            .Set(c => c.IsAnonymous, cart.IsAnonymous)
+            .Set(c => c.LastModifiedDate, DateTime.Now);
+        
+        var updateOptions = new UpdateOptions() { IsUpsert = true };
+        
+        await _cartsCollection.UpdateOneAsync(
+            c => c.Id == cart.Id,
+            updateDefinition,
+            updateOptions);
     }
 
     public async Task<Cart?> FindByCustomer(Guid customerId)
@@ -44,11 +54,6 @@ public class MongoShoppingCartRepository : IShoppingCartRepository
             .Find(cart => cart.Id == customerId)
             .FirstOrDefaultAsync();
         return cart;
-    }
-
-    public async Task Update(Cart cart)
-    {
-        await _cartsCollection.ReplaceOneAsync(c => c.Id == cart.Id, cart);
     }
 
     public async Task<IEnumerable<Cart>> All()
