@@ -34,7 +34,7 @@ public class CartController : ControllerBase
         if (cart.IsFailed)
             return BadRequest();
 
-        await _repository.Add(cart.Value);
+        await _repository.Save(cart.Value);
         return CreatedAtAction(
             nameof(CreateShoppingCart),
             CartResponse.FromEntity(cart.Value));
@@ -75,7 +75,7 @@ public class CartController : ControllerBase
             return NotFound();
 
         cart.Clear();
-        await _repository.Update(cart);
+        await _repository.Save(cart);
         return Ok();
     }
 
@@ -95,7 +95,7 @@ public class CartController : ControllerBase
             return NotFound();
 
         cart.PutItem(item);
-        await _repository.Update(cart);
+        await _repository.Save(cart);
         return Ok();
     }
 
@@ -115,7 +115,7 @@ public class CartController : ControllerBase
             return NotFound();
 
         cart.UpdateItem(item);
-        await _repository.Update(cart);
+        await _repository.Save(cart);
         return Ok();
     }
 
@@ -132,7 +132,7 @@ public class CartController : ControllerBase
 
         var deleted = cart.RemoveItem(productId);
         if (deleted)
-            await _repository.Update(cart);
+            await _repository.Save(cart);
         return Ok();
     }
 }
