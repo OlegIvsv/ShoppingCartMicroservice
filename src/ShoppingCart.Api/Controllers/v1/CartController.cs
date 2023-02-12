@@ -22,13 +22,15 @@ public class CartController : ControllerBase
     [ProducesResponseType(typeof(CartResponse), 201)]
     [ProducesResponseType(409)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> CreateShoppingCart([GuidId] Guid customerId)
+    public async Task<IActionResult> CreateShoppingCart(
+        [GuidId] Guid customerId,
+        [FromQuery] bool isAnonymous = true)
     {
         var cartInRepo = await _repository.FindByCustomer(customerId);
         if (cartInRepo is not null)
             return Conflict();
 
-        var cart = Cart.TryCreate(customerId);
+        var cart = Cart.TryCreate(customerId, isAnonymous);
         if (cart.IsFailed)
             return BadRequest();
 
