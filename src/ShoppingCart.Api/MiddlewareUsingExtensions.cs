@@ -14,6 +14,7 @@ public static class MiddlewareUsingExtensions
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
+            options.DefaultModelsExpandDepth(-1);
             foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse())
             {
                 options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",

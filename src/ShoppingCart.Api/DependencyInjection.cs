@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using ShoppingCart.Api.Contracts.ContractBinders;
+using ShoppingCart.Api.Contracts.Swagger;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
 
 namespace ShoppingCart.Api;
 
@@ -51,7 +53,11 @@ public static class DependencyInjection
             setup.GroupNameFormat = "'v'VVV";
         });
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            c.ExampleFilters();
+        });
+        services.AddSwaggerExamplesFromAssemblyOf<Program>();
         services.ConfigureOptions<ConfigureSwaggerOptions>();
         
         return services;
