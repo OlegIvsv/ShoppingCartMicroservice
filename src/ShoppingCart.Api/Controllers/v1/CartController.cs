@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
 using ShoppingCart.Api.Contracts.ContractAttributes;
+using ShoppingCart.Api.Contracts.ContractBinders;
+using ShoppingCart.Api.Contracts.Swagger;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Interfaces.Interfaces;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace ShoppingCart.Api.Controllers.v1;
 
@@ -83,6 +86,7 @@ public class CartController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
+    [SwaggerRequestExample(typeof(CartItemRequest), typeof(CartItemExampleProvider))]
     public async Task<IActionResult> PutItemToCart( 
         [GuidId] Guid customerId, 
         [FromBody] CartItem item)
@@ -103,6 +107,7 @@ public class CartController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
+    [SwaggerRequestExample(typeof(CartItemRequest), typeof(CartItemExampleProvider))]
     public async Task<IActionResult> UpdateItemInCart(
         [GuidId] Guid customerId, 
         [FromBody] CartItem item)
