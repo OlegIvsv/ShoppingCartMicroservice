@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using ShoppingCart.Api.Contracts.Swagger;
+using ShoppingCart.Api.Contracts.ContractBinders;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
