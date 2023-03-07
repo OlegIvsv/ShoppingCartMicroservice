@@ -68,4 +68,11 @@ public class MongoShoppingCartRepository : IShoppingCartRepository
         var deleteResult = await _cartsCollection.DeleteOneAsync(cart => cart.Id == customerId);
         return deleteResult.DeletedCount > 0;
     }
+
+    public async Task<long> DeleteAbandoned(DateTime withoutUpdatesSince)
+    {
+        var deleteResult = await _cartsCollection
+            .DeleteManyAsync(cart => cart.LastModifiedDate < withoutUpdatesSince && cart.IsAnonymous);
+        return deleteResult.DeletedCount;
+    }
 }
