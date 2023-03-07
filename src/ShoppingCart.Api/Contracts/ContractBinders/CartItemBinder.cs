@@ -74,4 +74,12 @@ public class CartItemBinder : IModelBinder
         else
             ctx.Result = ModelBindingResult.Success(cartItemResult.Value);
     }
+
+    private record CartItemRequest(
+        Guid ProductId,
+        decimal UnitPrice,
+        string ProductTitle,
+        int ItemQuantity,
+        double Discount,
+        string ImageUrl);
 }
