@@ -11,7 +11,7 @@ services:
     
   mongodb:
     container_name: mongodb
-    image: shopping-cart-ms-mongodb
+    image: mongo
     ports:
       - 27017:27017
     environment:
