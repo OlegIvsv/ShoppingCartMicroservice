@@ -2,8 +2,16 @@
 
 namespace ShoppingCart.Api.Contracts.Swagger;
 
-public class CartItemExampleProvider : IExamplesProvider<CartItemRequest>
+
+public class CartItemExampleProvider : IExamplesProvider<object>
 {
-    public CartItemRequest GetExamples()
-        => new CartItemRequest(Guid.Empty, 0.00m, "string", 0, 0.00, "string");
+    public object GetExamples() => new
+    {
+        customerId = Guid.Empty,
+        unitPrice = 0.00m,
+        productTitle = "string",
+        itemQuantity = 0,
+        discount = 0.00,
+        imageUrl = "string"
+    };
 }
