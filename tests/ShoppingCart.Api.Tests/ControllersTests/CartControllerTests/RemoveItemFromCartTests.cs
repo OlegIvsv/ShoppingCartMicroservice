@@ -21,7 +21,7 @@ public class RemoveItemFromCartTests : CartsControllerIntegrationTestsBase
         HttpResponseMessage response = await _client.PutAsync(queryString, null);
         //Assert
         response.AssertOK();
-        await AssertItemIsNotInDb(cartId, productId);
+        await _cartCollection.AssertItemIsNotInDb(cartId, productId);
     }
 
     [Fact]

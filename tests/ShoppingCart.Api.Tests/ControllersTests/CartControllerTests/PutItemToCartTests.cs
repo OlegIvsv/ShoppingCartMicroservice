@@ -22,7 +22,7 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
             JsonContent.Create(bodyObject));
         //Assert
         response.AssertOK();
-        await AssertItemIsInDb(cartId, productId, 7);
+        await _cartCollection.AssertItemIsInDb(cartId, productId, 7);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
             JsonContent.Create(bodyObject));
         //Assert
         response.AssertOK();
-        await AssertItemIsInDb(cart.Id, item.ProductId, item.ItemQuantity.Value + 7);
+        await _cartCollection.AssertItemIsInDb(cart.Id, item.ProductId, item.ItemQuantity.Value + 7);
     }
 
     [Fact]

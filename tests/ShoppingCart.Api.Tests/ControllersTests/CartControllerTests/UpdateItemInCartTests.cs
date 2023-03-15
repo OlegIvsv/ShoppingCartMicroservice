@@ -23,7 +23,7 @@ public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
             JsonContent.Create(bodyObject));
         //Assert
         response.AssertOK();
-        await AssertItemIsInDb(cartId, productId, 7);
+        await _cartCollection.AssertItemIsInDb(cartId, productId, 7);
     }
 
     [Fact]
