@@ -21,30 +21,32 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     public CartsControllerIntegrationTestsBase()
     {
         _runner = MongoDbRunner.Start();
-        var databaseName = $"testdb_{new Random().Next()}";
-        var collectionName = $"testcoll_{new Random().Next()}";
 
-
-        var settings = new MongoSettings
+        var mongoSettings = new MongoSettings
         {
             ConnectionString = _runner.ConnectionString,
-            Database = databaseName,
-            ShoppingCartsCollection = collectionName
+            Database = $"testdb_{DateTime.Now.Ticks}",
+            ShoppingCartsCollection = $"testcoll_{DateTime.Now.Ticks}"
         };
+
         var appFactory = new WebApplicationFactory<Program>();
         appFactory = appFactory.WithWebHostBuilder(builder =>
         {
-            builder.ConfigureTestServices(services => { services.AddSingleton(Options.Create(settings)); });
+            // Disable Quartz clean-up job for tests
+            builder.UseSetting("Jobs:CartCleanUpJob:Enabled", "false");
+            // Setup services for testing
+            builder.ConfigureTestServices(services =>
+            {
+                services.AddSingleton(Options.Create(mongoSettings));
+            });
             // Create an instance of repo to initialize serializators
-            //TODO: find another way to initialize serializators before filling test DB with data
-            var mongoRepo = new MongoShoppingCartRepository(Options.Create(settings));
+            var mongoRepo = new MongoShoppingCartRepository(Options.Create(mongoSettings));
         });
         _client = appFactory.CreateClient();
 
-
         _cartCollection = new MongoClient(_runner.ConnectionString)
-            .GetDatabase(databaseName)
-            .GetCollection<Cart>(collectionName);
+            .GetDatabase(mongoSettings.Database)
+            .GetCollection<Cart>(mongoSettings.ShoppingCartsCollection);
     }
 
     protected async Task<List<Cart>> PrepareDatabase()
