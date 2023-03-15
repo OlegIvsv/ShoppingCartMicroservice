@@ -53,18 +53,9 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     {
         var testCarts = new List<Cart>
         {
-            Cart.TryCreate(
-                Guid.Parse("008927df-3b96-4707-ad84-4e689d634987"),
-                true)
-                .Value,
-            Cart.TryCreate(
-                Guid.Parse("35454152-4895-42d7-b887-f274deff210d"),
-                false)
-                .Value,
-            Cart.TryCreate(
-                Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2"),
-                true)
-                .Value
+            Cart.TryCreate(Guid.Parse("008927df-3b96-4707-ad84-4e689d634987"), true).Value,
+            Cart.TryCreate(Guid.Parse("35454152-4895-42d7-b887-f274deff210d"), false).Value,
+            Cart.TryCreate(Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2"), true).Value
         };
 
         testCarts[0].PutItem(
@@ -104,12 +95,12 @@ public class CartsControllerIntegrationTestsBase : IDisposable
     {
         return new
         {
-            productId = productId,
-            unitPrice = unitPrice,
-            productTitle = productTitle,
-            itemQuantity = itemQuantity,
-            discount = discount,
-            imageUrl = imageUrl
+            productId,
+            unitPrice,
+            productTitle,
+            itemQuantity,
+            discount,
+            imageUrl
         };
     }
     
@@ -128,46 +119,7 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         var result = cart.Items.Any(item => item.ProductId == productId);
         Assert.False(result, "Test database contains a product with these Id");
     }
-
-    protected void AssertBadRequest(HttpResponseMessage responseMessage)
-    {
-        Assert.Equal(HttpStatusCode.BadRequest, responseMessage.StatusCode);
-    }
-
-    protected void AssertNotFound(HttpResponseMessage responseMessage)
-    {
-        Assert.Equal(HttpStatusCode.NotFound, responseMessage.StatusCode);
-    }
-
-    protected void AssertCondlict(HttpResponseMessage responseMessage)
-    {
-        Assert.Equal(HttpStatusCode.Conflict, responseMessage.StatusCode);
-    }
-
-    protected void AssertCreated(HttpResponseMessage responseMessage)
-    {
-        Assert.Equal(HttpStatusCode.Created, responseMessage.StatusCode);
-    }
-
-    protected void AssertOK(HttpResponseMessage responseMessage)
-    {
-        Assert.Equal(HttpStatusCode.OK, responseMessage.StatusCode);
-    }
-
-    protected void AssertJsonUtf8(HttpResponseMessage responseMessage)
-    {
-        Assert.Equal(
-            "application/json; charset=utf-8",
-            responseMessage.Content.Headers.ContentType.ToString());
-    }
-
-    protected void AssertJsonProblemUtf8(HttpResponseMessage responseMessage)
-    {
-        Assert.Equal(
-            "application/problem+json; charset=utf-8",
-            responseMessage.Content.Headers.ContentType.ToString());
-    }
-
+    
     public void Dispose()
     {
         _runner.Dispose();
