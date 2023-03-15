@@ -1,25 +1,31 @@
-version: "3"
+version: "3.9"
 name: shopping-cart-ms
 
 services:
   app:
     container_name: shopping-cart-api
     image: shopping-cart-api    # docker build -t shopping-cart-api .
-    ports:                      
-      - 80:80                   
-      - 443:443                 
-    
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - MongoDb__ConnectionString=${MONGODB_CONNECTION}
+      - MongoDb__Database=${MONGODB_DB_NAME}
+      - MongoDb__ShoppingCartsCollection=${MONGODB_COLLECTION_NAME}
+      - Jobs__CartCleanUpJob__AbandonmentPeriod=${ABANDONMENT_PERIOD}
+      - Jobs__CartCleanUpJob__CleanUpFrequency=${CLEANUP_FREQUENCY}
+      - Jobs__CartCleanUpJob__Enabled=${CLEANUP_ENABLED}
   mongodb:
     container_name: mongodb
     image: mongo
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=adminn
-      - MONGO_INITDB_ROOT_PASSWORD=passwordd
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INIT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INIT_PASS}
     volumes:
       - mongodb-data:/data/db
-    
+
 volumes:
   mongodb-data:
     driver: local
