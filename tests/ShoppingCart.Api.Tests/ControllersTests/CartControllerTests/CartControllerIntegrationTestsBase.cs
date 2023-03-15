@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -102,22 +101,6 @@ public class CartsControllerIntegrationTestsBase : IDisposable
             discount,
             imageUrl
         };
-    }
-    
-    protected async Task AssertItemIsInDb(Guid cartId, Guid productId, int expectedQuantity)
-    {
-        Cart? cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
-        var result = cart.Items.Any(
-            item => item.ProductId == productId
-                    && item.ItemQuantity.Value == expectedQuantity);
-        Assert.True(result, "Test database doesn't contain a product with these Id and Quantity");
-    }
-
-    protected async Task AssertItemIsNotInDb(Guid cartId, Guid productId)
-    {
-        Cart? cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
-        var result = cart.Items.Any(item => item.ProductId == productId);
-        Assert.False(result, "Test database contains a product with these Id");
     }
     
     public void Dispose()
