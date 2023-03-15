@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
@@ -15,8 +16,8 @@ public class GetShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.GetAsync($"api/cart/{cartId}");
         //Assert
-        AssertOK(response);
-        AssertJsonUtf8(response);
+        response.AssertOK();
+        response.AssertJsonUtf8();
         var cartFromResponse = await response.Content.ReadFromJsonAsync<CartResponse>();
         Assert.NotNull(cartFromResponse);
         Assert.Equal(cartId, cartFromResponse.CustomerId);
@@ -31,8 +32,8 @@ public class GetShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.GetAsync($"api/cart/{randomId}");
         //Assert
-        AssertNotFound(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertNotFound();
+        response.AssertJsonProblemUtf8();
     }
 
     [Fact]
@@ -44,7 +45,7 @@ public class GetShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.GetAsync($"api/cart/{emptyId}");
         //Assert
-        AssertBadRequest(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertBadRequest();
+        response.AssertJsonProblemUtf8();
     }
 }

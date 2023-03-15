@@ -1,4 +1,5 @@
 using MongoDB.Driver;
+using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using ShoppingCart.Domain.Entities;
 using Xunit;
 
@@ -15,7 +16,7 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{cartId}", null);
         //Assert
-        AssertOK(response);
+        response.AssertOK();
         Cart? cart = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
         Assert.Equal(0, cart.Items.Count);
     }
@@ -29,8 +30,8 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{randomId}", null);
         //Assert
-        AssertNotFound(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertNotFound();
+        response.AssertJsonProblemUtf8();
     }
 
     [Fact]
@@ -41,7 +42,7 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{Guid.Empty}", null);
         //Assert
-        AssertBadRequest(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertBadRequest();
+        response.AssertJsonProblemUtf8();
     }
 }

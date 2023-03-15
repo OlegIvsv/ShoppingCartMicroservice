@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
@@ -19,7 +20,7 @@ public class RemoveItemFromCartTests : CartsControllerIntegrationTestsBase
         var queryString = $"api/cart/remove-item/{cartId}?productId={productId}";
         HttpResponseMessage response = await _client.PutAsync(queryString, null);
         //Assert
-        AssertOK(response);
+        response.AssertOK();
         await AssertItemIsNotInDb(cartId, productId);
     }
 
@@ -34,7 +35,7 @@ public class RemoveItemFromCartTests : CartsControllerIntegrationTestsBase
         HttpResponseMessage response = await _client.PutAsync(
             $"api/cart/remove-item/{cartId}?productId={productId}", null);
         //Assert
-        AssertNotFound(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertNotFound();
+        response.AssertJsonProblemUtf8();
     }
 }

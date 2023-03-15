@@ -1,3 +1,4 @@
+using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
@@ -13,7 +14,7 @@ public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.DeleteAsync($"api/cart/{cartId}");
         //Assert
-        AssertOK(response);
+        response.AssertOK();
     }
 
     [Fact]
@@ -25,8 +26,8 @@ public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.DeleteAsync($"api/cart/{randomId}");
         //Assert
-        AssertNotFound(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertNotFound();
+        response.AssertJsonProblemUtf8();
     }
 
     [Fact]
@@ -37,7 +38,7 @@ public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.DeleteAsync($"api/cart/{Guid.Empty}");
         //Assert
-        AssertBadRequest(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertBadRequest();
+        response.AssertJsonProblemUtf8();
     }
 }

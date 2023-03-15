@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using ShoppingCart.Domain.Entities;
 using Xunit;
 
@@ -20,7 +21,7 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
             $"api/cart/put-item/{cartId}",
             JsonContent.Create(bodyObject));
         //Assert
-        AssertOK(response);
+        response.AssertOK();
         await AssertItemIsInDb(cartId, productId, 7);
     }
 
@@ -37,7 +38,7 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
             $"api/cart/put-item/{cart.Id}",
             JsonContent.Create(bodyObject));
         //Assert
-        AssertOK(response);
+        response.AssertOK();
         await AssertItemIsInDb(cart.Id, item.ProductId, item.ItemQuantity.Value + 7);
     }
 
@@ -54,7 +55,7 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
             $"api/cart/put-item/{cartId}",
             JsonContent.Create(bodyObjectWithWrongDiscount));
         //Assert
-        AssertBadRequest(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertBadRequest();
+        response.AssertJsonProblemUtf8();
     }
 }

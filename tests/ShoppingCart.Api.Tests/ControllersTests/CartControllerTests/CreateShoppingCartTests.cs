@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using MongoDB.Driver;
 using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
@@ -17,8 +18,8 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         HttpResponseMessage response = 
             await _client.PostAsync($"api/cart/{cartId}?isAnonymous=true", null);
         //Assert
-        AssertCondlict(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertCondlict();
+        response.AssertJsonProblemUtf8();
     }
 
     [Fact]
@@ -31,8 +32,8 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         HttpResponseMessage response = 
             await _client.PostAsync($"api/cart/{cartId}?isAnonymous=true", null);
         //Assert
-        AssertCreated(response);
-        AssertJsonUtf8(response);
+        response.AssertCreated();
+        response.AssertJsonUtf8();
         var cartFromResponse = await response.Content.ReadFromJsonAsync<CartResponse>();
         Assert.NotNull(cartFromResponse);
         Assert.Equal(cartId, cartFromResponse.CustomerId);
@@ -47,8 +48,8 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         HttpResponseMessage response = 
             await _client.PostAsync($"api/cart/{0}?isAnonymous=true", null);
         //Assert
-        AssertBadRequest(response);
-        AssertJsonProblemUtf8(response);
+        response.AssertBadRequest();
+        response.AssertJsonProblemUtf8();
     }
 
     [Theory]
@@ -64,8 +65,8 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.PostAsync(uri, null);
         //Assert
-        AssertCreated(response);
-        AssertJsonUtf8(response);
+        response.AssertCreated();
+        response.AssertJsonUtf8();
         var responseBody = await response.Content.ReadFromJsonAsync<CartResponse>();
         var cartInDb = await _cartCollection.Find(c => c.Id == cartId).FirstAsync();
         Assert.NotNull(responseBody);
