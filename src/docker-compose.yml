@@ -4,7 +4,7 @@ name: shopping-cart-ms
 services:
   app:
     container_name: shopping-cart-api
-    image: shopping-cart-api    # docker build -t shopping-cart-api .
+    build: .
     ports:
       - 80:80
       - 443:443
