@@ -8,13 +8,16 @@ namespace ShoppingCart.Infrastructure.BackgroundJobs;
 
 public static class JobExtensions
 {
-    public static IServiceCollection AddQuartzJobs(
+    public static IServiceCollection AddQuartzCleanUpJob(
         this IServiceCollection services,
         ConfigurationManager configurationManager)
     {
         var cleanUpJobSettings = new CartsCleanUpSettings();
         configurationManager.Bind(CartsCleanUpSettings.SectionName, cleanUpJobSettings);
         services.AddSingleton(Options.Create(cleanUpJobSettings));
+
+        if (!cleanUpJobSettings.Enabled)
+            return services;
 
         services.AddQuartz(quartz =>
         {

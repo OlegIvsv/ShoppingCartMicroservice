@@ -20,7 +20,7 @@ public static class DependencyInjection
         configurationManager.Bind(MongoSettings.SectionName, mongoSettings);
         services.AddSingleton(Options.Create(mongoSettings));
         /* Quartz and jobs */
-        services.AddQuartzJobs(configurationManager);
+        services.AddQuartzCleanUpJob(configurationManager);
 
         return services;
     }
