@@ -1,6 +1,22 @@
 # Shoping cart microservice 🛒🛒🛒
 
-## Main responsibilities ❔
+## Table of Contents
+
+- ❔ [Main responsibilities](#main-responsibilities)
+- 🧩 [Approximate data format can be described as following](#approximate-data-format-can-be-described-as-following-)
+-[Running the microservice](#running-the-microservice)
+  - 🐳 [Running a docker container](#running-the-microservice)
+  - 💻 [Running locally](#running-locally)
+- 🪟 [API _**v1.0**_](#api--v10)
+  - [🔑 Get shopping cart by customer id](#-get-shopping-cart-by-customer-id)
+  - [🔑 Create a new shopping cart](#-create-a-new-shopping-cart)
+  - [🔑 Delete an existing shopping cart](#-delete-an-existing-shopping-cart)
+  - [🔑 Clear shopping cart](#-clear-shopping-cart)
+  - [🔑 Put item to shopping cart](#-put-item-to-shopping-cart)
+  - [🔑 Update item in shopping cart](#-update-item-in-shopping-cart)
+  - [🔑 Remove item from shopping cart](#-remove-item-from-shopping-cart)
+
+## Main Responsibilities ❔
 
  1. Storing shopping carts and items they contain.
  
@@ -8,9 +24,9 @@
 
  3. The main goal we are trying to achieve is to avoid losing the user's shopping cart by storing it on the server side instead of using local storage or, what is even worth, session storage. So, if the user login with another device or browser, his shopping cart will still be filled with selected items.
 
-## Running the microservice
+## Running the Microservice
 
-### Running a docker container
+### Running a Docker Container
 
 1. Create `.env` file with this configuration to `/src`:
 
@@ -38,7 +54,7 @@ JWT_ISSUER=YourIssuer
 docker compose -f ./docker-compose.yml up 
 ```
 
-### Running locally
+### Running Locally
 
 1. Run a **_mongodb_** instanse.
 2. Go to `launchSetting.json`
@@ -61,7 +77,7 @@ docker compose -f ./docker-compose.yml up
 5. Build and run.
 
 
-## Approximate data format can be described as following 🧩
+## Data Format 🧩
 
 ```json
 {
