@@ -8,6 +8,59 @@
 
  3. The main goal we are trying to achieve is to avoid losing the user's shopping cart by storing it on the server side instead of using local storage or, what is even worth, session storage. So, if the user login with another device or browser, his shopping cart will still be filled with selected items.
 
+## Running the microservice
+
+### Running a docker container
+
+1. Create `.env` file with this configuration to `/src`:
+
+```dockerfile
+#Mongo DB Initializatoin
+MONGO_INIT_USER=user
+MONGO_INIT_PASS=pass
+# Mongo DB connection
+MONGODB_CONNECTION=mongodb://user:pass@mongodb:port/
+MONGODB_DB_NAME=db_name
+MONGODB_COLLECTION_NAME=collection_name
+# DB Cleaning options 
+ABANDONMENT_PERIOD=00:05:00
+CLEANUP_FREQUENCY=00:05:00
+LEANUP_ENABLED=false
+# Authentication & Authorization
+JWT_KEY=qwertyuiopasdfghjklzxcvbnm1234567890
+JWT_AUDIENCE=YourAudience
+JWT_ISSUER=YourIssuer
+```
+2. Replace values with your configuration.
+3. Run docker-compose: 
+
+```commandline
+docker compose -f ./docker-compose.yml up 
+```
+
+### Running locally
+
+1. Run a **_mongodb_** instanse.
+2. Go to `launchSetting.json`
+3. In chosen the profile repalce the `environmentVariables` section:
+```json
+   "environmentVariables": {
+   "ASPNETCORE_ENVIRONMENT": "Production",
+   "MongoDb__ConnectionString": "mongodb://adminn:passwordd@localhost:27017/",
+   "MongoDb__Database": "shop_db",
+   "MongoDb__ShoppingCartsCollection": "shopping_carts",
+   "Jobs__CartCleanUpJob__AbandonmentPeriod": "01:00:00",
+   "Jobs__CartCleanUpJob__CleanUpFrequency": "01:00:00",
+   "Jobs__CartCleanUpJob__Enabled": "false",
+   "Auth__Issuer": "Issuer",
+   "Auth__Audience": "Audience",
+   "Auth__Key": "Key"
+   }
+```
+4. Replace values with your configuration.
+5. Build and run.
+
+
 ## Approximate data format can be described as following 🧩
 
 ```json
