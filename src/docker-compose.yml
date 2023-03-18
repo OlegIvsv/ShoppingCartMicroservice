@@ -15,6 +15,9 @@ services:
       - Jobs__CartCleanUpJob__AbandonmentPeriod=${ABANDONMENT_PERIOD}
       - Jobs__CartCleanUpJob__CleanUpFrequency=${CLEANUP_FREQUENCY}
       - Jobs__CartCleanUpJob__Enabled=${CLEANUP_ENABLED}
+      - Auth__Issuer=${AUTH_ISSUER}
+      - Auth__Audience=${AUTH_AUDIENCE}
+      - Auth_Key=${AUTH_KEY}
   mongodb:
     container_name: mongodb
     image: mongo
