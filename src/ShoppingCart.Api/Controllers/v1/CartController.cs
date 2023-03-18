@@ -11,6 +11,7 @@ namespace ShoppingCart.Api.Controllers.v1;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
+[Authorize(Policy = "owner-only")]
 public class CartController : ControllerBase
 {
     private readonly IShoppingCartRepository _repository;
