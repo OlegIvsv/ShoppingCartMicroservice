@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
 using ShoppingCart.Api.Contracts.ContractAttributes;
 using ShoppingCart.Api.Contracts.Swagger;
@@ -21,12 +22,12 @@ public class CartController : ControllerBase
         _repository = cartRepository;
     }
 
-    [HttpPost("{customerId}")]
+    [HttpPost("{customerId:guidID}")]
     [ProducesResponseType(typeof(CartResponse), 201)]
     [ProducesResponseType(409)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> CreateShoppingCart(
-        [GuidId] Guid customerId,
+        Guid customerId,
         [FromQuery] bool isAnonymous = true)
     {
         var cartInRepo = await _repository.FindByCustomer(customerId);
@@ -43,10 +44,10 @@ public class CartController : ControllerBase
             CartResponse.FromEntity(cart.Value));
     }
 
-    [HttpGet("{customerId}")]
+    [HttpGet("{customerId:guidID}")]
     [ProducesResponseType(typeof(CartResponse), 200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> GetShoppingCart([GuidId] Guid customerId)
+    public async Task<IActionResult> GetShoppingCart(Guid customerId)
     {
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
@@ -56,7 +57,7 @@ public class CartController : ControllerBase
         return Ok(responseCart);
     }
 
-    [HttpDelete("{customerId}")]
+    [HttpDelete("{customerId:guidID}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> DeleteShoppingCart([GuidId] Guid customerId)
@@ -68,10 +69,10 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("clear/{customerId}")]
+    [HttpPut("clear/{customerId:guidID}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> ClearShoppingCart([GuidId] Guid customerId)
+    public async Task<IActionResult> ClearShoppingCart(Guid customerId)
     {
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
@@ -82,13 +83,13 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("put-item/{customerId}")]
+    [HttpPut("put-item/{customerId:guidID}")]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
     [SwaggerRequestExample(typeof(CartItem), typeof(CartItemExampleProvider))]
     public async Task<IActionResult> PutItemToCart( 
-        [GuidId] Guid customerId, 
+        Guid customerId, 
         [FromBody] CartItem item)
     {
         if (!ModelState.IsValid)
@@ -103,13 +104,13 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("update-item/{customerId}")]
+    [HttpPut("update-item/{customerId:guidID}")]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
     [SwaggerRequestExample(typeof(CartItem), typeof(CartItemExampleProvider))]
     public async Task<IActionResult> UpdateItemInCart(
-        [GuidId] Guid customerId, 
+        Guid customerId, 
         [FromBody] CartItem item)
     {
         if (!ModelState.IsValid)
@@ -124,11 +125,11 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("remove-item/{customerId}")]
+    [HttpPut("remove-item/{customerId:guidID}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
     public async Task<IActionResult> RemoveItemFromCart(
-        [GuidId] Guid customerId, 
+        Guid customerId, 
         [FromQuery][GuidId] Guid productId)
     {
         var cart = await _repository.FindByCustomer(customerId);

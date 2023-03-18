@@ -354,3 +354,5 @@ MigrationBackup/
 # Environment variables
 .env
 
+# Files for making requests during development
+*.http
