@@ -2,12 +2,13 @@
 
 ## Table of Contents
 
-- ❔ [Main responsibilities](#main-responsibilities)
-- 🧩 [Approximate data format can be described as following](#approximate-data-format-can-be-described-as-following-)
--[Running the microservice](#running-the-microservice)
-  - 🐳 [Running a docker container](#running-the-microservice)
-  - 💻 [Running locally](#running-locally)
-- 🪟 [API _**v1.0**_](#api--v10)
+- [❔ Main responsibilities](#main-responsibilities)
+- [🧩 Approximate data format can be described as following](#approximate-data-format-can-be-described-as-following-)
+- [🛠 Technologies](#technologies-and-tools)
+- [🚀 Running the microservice](#running-the-microservice)
+  - [🐳 Running a docker container](#running-the-microservice)
+  - [💻 Running locally](#running-locally)
+- [🪟 API _**v1.0**_](#api--v10)
   - [🔑 Get shopping cart by customer id](#-get-shopping-cart-by-customer-id)
   - [🔑 Create a new shopping cart](#-create-a-new-shopping-cart)
   - [🔑 Delete an existing shopping cart](#-delete-an-existing-shopping-cart)
@@ -23,6 +24,55 @@
  2. Providing API to create, and delete baskets, allows us to manipulate items in a particular shopping cart and clear baskets. Also, it should let us get cart data.
 
  3. The main goal we are trying to achieve is to avoid losing the user's shopping cart by storing it on the server side instead of using local storage or, what is even worth, session storage. So, if the user login with another device or browser, his shopping cart will still be filled with selected items.
+
+## Technologies and Tools
+
+### .NET 6 and ASP.NET 6
+I chose to use [.NET 6]() for this project because it is a long-term support (LTS) release with several new features and
+improvements over previous versions. It also has a robust ecosystem with strong community support and tooling. While
+.NET 7 was also available at the time, I decided to use .NET 6 because it was the most stable and widely adopted version
+at the time.
+
+### Docker
+A tool that allows you to create, deploy, and run applications in containers. By using 
+[Docker](), it becomes easier to manage and distribute applications across different environments, 
+such as development, testing, and production.
+
+### Logging
+- [**Serilog**](https://www.nuget.org/packages/Serilog.AspNetCore)  —
+  A logging library for .NET that provides a simple and highly configurable approach to logging, allowing developers to
+  easily capture structured log data.
+
+### API Documentation
+- [**Swagger**](https://swagger.io/) — 
+  An open-source toolset for building, documenting, and testing RESTful APIs that provides a user interface
+  for developers to interact with and understand the API's capabilities.
+
+### Database
+- [**MongoDB**](https://www.mongodb.com/) —
+  a cross-platform document-oriented NoSQL database that uses a flexible data model to store data, making it easier to
+  build and scale applications.
+- [**MongoDB.Driver**](https://www.nuget.org/packages/MongoDB.Driver) — 
+  A package for interacting with MongoDB databases using C# code.
+
+### Job Scheduling
+- [**Quartz.NET**](https://www.nuget.org/packages/Quartz) — 
+  Quartz.NET is a full-featured, open-source job scheduling library that can be integrated within 
+  .NET applications, allowing developers to schedule and execute tasks based on a predefined set of criteria.
+
+### Testing
+- [**xUnit**](https://www.nuget.org/packages/Microsoft.AspNetCore.Mvc.Testing) — 
+  A package for testing ASP.NET Core APIs.
+- [**Moq**](https://github.com/moq/moq) —
+  a popular mocking library for .NET developers that allows you to easily create mock 
+  objects for testing.
+- [**Mongo2Go**](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk) —
+  a library for .NET developers that provides an in-memory MongoDB database instance for use 
+  in testing and development environments.
+- [**k6**](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk) —
+  an open-source load testing tool for web applications that enables developers to test the performance and scalability
+  of their applications. 
+
 
 ## Running the Microservice
 
@@ -61,16 +111,16 @@ docker compose -f ./docker-compose.yml up
 3. In chosen the profile repalce the `environmentVariables` section:
 ```json
    "environmentVariables": {
-   "ASPNETCORE_ENVIRONMENT": "Production",
-   "MongoDb__ConnectionString": "mongodb://adminn:passwordd@localhost:27017/",
-   "MongoDb__Database": "shop_db",
-   "MongoDb__ShoppingCartsCollection": "shopping_carts",
-   "Jobs__CartCleanUpJob__AbandonmentPeriod": "01:00:00",
-   "Jobs__CartCleanUpJob__CleanUpFrequency": "01:00:00",
-   "Jobs__CartCleanUpJob__Enabled": "false",
-   "Auth__Issuer": "Issuer",
-   "Auth__Audience": "Audience",
-   "Auth__Key": "Key"
+     "ASPNETCORE_ENVIRONMENT": "Production",
+     "MongoDb__ConnectionString": "mongodb://adminn:passwordd@localhost:27017/",
+     "MongoDb__Database": "shop_db",
+     "MongoDb__ShoppingCartsCollection": "shopping_carts",
+     "Jobs__CartCleanUpJob__AbandonmentPeriod": "01:00:00",
+     "Jobs__CartCleanUpJob__CleanUpFrequency": "01:00:00",
+     "Jobs__CartCleanUpJob__Enabled": "false",
+     "Auth__Issuer": "Issuer",
+     "Auth__Audience": "Audience",
+     "Auth__Key": "Key"
    }
 ```
 4. Replace values with your configuration.
