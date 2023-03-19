@@ -42,7 +42,7 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{Guid.Empty}", null);
         //Assert
-        response.AssertBadRequest();
+        response.AssertNotFound();
         response.AssertJsonProblemUtf8();
     }
 }

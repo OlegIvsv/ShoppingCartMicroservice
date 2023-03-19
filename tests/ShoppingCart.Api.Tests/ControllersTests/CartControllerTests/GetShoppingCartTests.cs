@@ -45,7 +45,7 @@ public class GetShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.GetAsync($"api/cart/{emptyId}");
         //Assert
-        response.AssertBadRequest();
+        response.AssertNotFound();
         response.AssertJsonProblemUtf8();
     }
 }

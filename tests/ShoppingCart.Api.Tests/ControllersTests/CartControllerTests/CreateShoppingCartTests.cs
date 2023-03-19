@@ -48,7 +48,7 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         HttpResponseMessage response = 
             await _client.PostAsync($"api/cart/{0}?isAnonymous=true", null);
         //Assert
-        response.AssertBadRequest();
+        response.AssertNotFound();
         response.AssertJsonProblemUtf8();
     }
 

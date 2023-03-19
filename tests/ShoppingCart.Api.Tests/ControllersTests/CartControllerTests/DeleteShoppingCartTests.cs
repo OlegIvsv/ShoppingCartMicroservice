@@ -38,7 +38,7 @@ public class DeleteShoppingCartTests : CartsControllerIntegrationTestsBase
         //Act
         HttpResponseMessage response = await _client.DeleteAsync($"api/cart/{Guid.Empty}");
         //Assert
-        response.AssertBadRequest();
+        response.AssertNotFound();
         response.AssertJsonProblemUtf8();
     }
 }
