@@ -7,7 +7,6 @@ using MongoDB.Driver;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.ValueObjects;
 using ShoppingCart.Infrastructure.DataAccess.MongoDb;
-using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 
@@ -33,6 +32,9 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         {
             // Disable Quartz clean-up job for tests
             builder.UseSetting("Jobs:CartCleanUpJob:Enabled", "false");
+            builder.UseSetting("Auth:Key", "SomeTestPublicKey");
+            builder.UseSetting("Auth:Audience", "TestAudience");
+            builder.UseSetting("Auth:Issuer", "TestIssuer");
             // Setup services for testing
             builder.ConfigureTestServices(services =>
             {
