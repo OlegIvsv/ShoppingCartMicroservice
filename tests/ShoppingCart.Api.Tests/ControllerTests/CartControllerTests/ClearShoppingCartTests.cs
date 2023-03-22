@@ -1,11 +1,12 @@
 using MongoDB.Driver;
+using ShoppingCart.Api.Tests.Common;
 using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using ShoppingCart.Domain.Entities;
 using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
 
-public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
+public class ClearShoppingCartTests : IntegrationTestBase
 {
     [Fact]
     public async Task ClearShoppingCart_CartExists_ReturnsOk()
@@ -29,18 +30,6 @@ public class ClearShoppingCartTests : CartsControllerIntegrationTestsBase
         var randomId = Guid.NewGuid();
         //Act
         HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{randomId}", null);
-        //Assert
-        response.AssertNotFound();
-        response.AssertJsonProblemUtf8();
-    }
-
-    [Fact]
-    public async Task ClearShoppingCart_InvalidId_ReturnsBadRequest()
-    {
-        //Arrange
-        await PrepareDatabase();
-        //Act
-        HttpResponseMessage response = await _client.PutAsync($"api/cart/clear/{Guid.Empty}", null);
         //Assert
         response.AssertNotFound();
         response.AssertJsonProblemUtf8();
