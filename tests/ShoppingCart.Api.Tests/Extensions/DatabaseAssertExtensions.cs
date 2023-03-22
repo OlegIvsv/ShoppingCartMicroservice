@@ -2,7 +2,7 @@
 using ShoppingCart.Domain.Entities;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests.Extensions;
+namespace ShoppingCart.Api.Tests.Extensions;
 
 internal static class DatabaseAssertExtensions
 {

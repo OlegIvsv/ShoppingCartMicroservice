@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using ShoppingCart.Api.Tests.Common;
 using ShoppingCart.Api.Tests.ControllersTests.Extensions;
+using ShoppingCart.Api.Tests.Extensions;
 using Xunit;
 
 namespace ShoppingCart.Api.Tests.ControllerTests.CartControllerTests;

@@ -8,15 +8,15 @@ using ShoppingCart.Domain.Entities;
 using ShoppingCart.Domain.ValueObjects;
 using ShoppingCart.Infrastructure.DataAccess.MongoDb;
 
-namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
+namespace ShoppingCart.Api.Tests.Common;
 
-public class CartsControllerIntegrationTestsBase : IDisposable
+public class IntegrationTestBase : IDisposable
 {
     protected readonly IMongoCollection<Cart> _cartCollection;
     protected readonly MongoDbRunner _runner;
     protected readonly HttpClient _client;
 
-    public CartsControllerIntegrationTestsBase()
+    public IntegrationTestBase()
     {
         _runner = MongoDbRunner.Start();
 
@@ -55,8 +55,8 @@ public class CartsControllerIntegrationTestsBase : IDisposable
         var testCarts = new List<Cart>
         {
             Cart.TryCreate(Guid.Parse("008927df-3b96-4707-ad84-4e689d634987"), true).Value,
-            Cart.TryCreate(Guid.Parse("35454152-4895-42d7-b887-f274deff210d"), false).Value,
-            Cart.TryCreate(Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2"), true).Value
+            Cart.TryCreate(Guid.Parse("35454152-4895-42d7-b887-f274deff210d"), true).Value,
+            Cart.TryCreate(Guid.Parse("a7e1c434-8fae-44a9-a6ce-251c29119fc2"), false).Value
         };
 
         testCarts[0].PutItem(
@@ -104,7 +104,7 @@ public class CartsControllerIntegrationTestsBase : IDisposable
             imageUrl
         };
     }
-    
+
     public void Dispose()
     {
         _runner.Dispose();
