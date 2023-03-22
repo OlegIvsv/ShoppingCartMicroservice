@@ -1,12 +1,12 @@
 using System.Net.Http.Json;
-using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.Common;
 using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using ShoppingCart.Domain.Entities;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
+namespace ShoppingCart.Api.Tests.ControllerTests.CartControllerTests;
 
-public class PutItemToCartTests : CartsControllerIntegrationTestsBase
+public class PutItemToCartTests : IntegrationTestBase
 {
     [Fact]
     public async Task PutItemToCart_ItIsNewItem_AddsItemAndReturnsOk()
@@ -49,7 +49,7 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
         await PrepareDatabase();
         var cartId = Guid.NewGuid();
         var bodyObjectWithWrongDiscount =
-            GetTestItemBody(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 1.07);
+            GetTestItemBody(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 1.07); // discount = 107%
         //Act
         HttpResponseMessage response = await _client.PutAsync(
             $"api/cart/put-item/{cartId}",
@@ -57,5 +57,21 @@ public class PutItemToCartTests : CartsControllerIntegrationTestsBase
         //Assert
         response.AssertBadRequest();
         response.AssertJsonProblemUtf8();
+    }
+
+    [Fact]
+    public async Task PutItemToCart_CartDoesNotExists_ReturnsNotFound()
+    {
+        //Arrange
+        await PrepareDatabase();
+        var cartId = Guid.NewGuid();
+        var bodyObjectWithWrongDiscount =
+            GetTestItemBody(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 0.01);
+        //Act
+        HttpResponseMessage response = await _client.PutAsync(
+            $"api/cart/put-item/{cartId}",
+            JsonContent.Create(bodyObjectWithWrongDiscount));
+        //Assert
+        response.AssertNotFound();
     }
 }
