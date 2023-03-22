@@ -55,14 +55,7 @@ public class MongoShoppingCartRepository : IShoppingCartRepository
             .FirstOrDefaultAsync();
         return cart;
     }
-
-    public async Task<IEnumerable<Cart>> All()
-    {
-        return await _cartsCollection
-            .Find(_ => true)
-            .ToListAsync();
-    }
-
+    
     public async Task<bool> Delete(Guid customerId)
     {
         var deleteResult = await _cartsCollection.DeleteOneAsync(cart => cart.Id == customerId);
