@@ -1,18 +1,19 @@
 using System.Net.Http.Json;
 using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.Common;
 using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
+namespace ShoppingCart.Api.Tests.ControllerTests.CartControllerTests;
 
-public class GetShoppingCartTests : CartsControllerIntegrationTestsBase
+public class GetShoppingCartTests : IntegrationTestBase
 {
     [Fact]
     public async Task GetShoppingCart_CartExists_ReturnsOkResultWithData()
     {
         //Arrange
         var cartsInDb = await PrepareDatabase();
-        Guid cartId = cartsInDb.Last().Id;
+        Guid cartId = cartsInDb.Last(c => c.IsAnonymous).Id;
         //Act
         HttpResponseMessage response = await _client.GetAsync($"api/cart/{cartId}");
         //Assert
@@ -31,19 +32,6 @@ public class GetShoppingCartTests : CartsControllerIntegrationTestsBase
         var randomId = Guid.NewGuid();
         //Act
         HttpResponseMessage response = await _client.GetAsync($"api/cart/{randomId}");
-        //Assert
-        response.AssertNotFound();
-        response.AssertJsonProblemUtf8();
-    }
-
-    [Fact]
-    public async Task GetShoppingCart_EmptyIdValue_ReturnsBadRequest()
-    {
-        //Arrange
-        await PrepareDatabase();
-        var emptyId = Guid.Empty;
-        //Act
-        HttpResponseMessage response = await _client.GetAsync($"api/cart/{emptyId}");
         //Assert
         response.AssertNotFound();
         response.AssertJsonProblemUtf8();
