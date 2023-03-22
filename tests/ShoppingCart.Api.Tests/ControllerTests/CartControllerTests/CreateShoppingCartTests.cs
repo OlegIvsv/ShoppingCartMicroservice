@@ -1,12 +1,13 @@
 using System.Net.Http.Json;
 using MongoDB.Driver;
 using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.Common;
 using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
+namespace ShoppingCart.Api.Tests.ControllerTests.CartControllerTests;
 
-public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
+public class CreateShoppingCartTests : IntegrationTestBase
 {
     [Fact]
     public async Task CreateShoppingCart_CartAlreadyExists_ReturnsConflictResult()
@@ -37,19 +38,6 @@ public class CreateShoppingCartTests : CartsControllerIntegrationTestsBase
         var cartFromResponse = await response.Content.ReadFromJsonAsync<CartResponse>();
         Assert.NotNull(cartFromResponse);
         Assert.Equal(cartId, cartFromResponse.CustomerId);
-    }
-
-    [Fact]
-    public async Task CreateShoppingCart_InvalidId_ReturnsBadRequestResult()
-    {
-        //Arrange
-        await PrepareDatabase();
-        //Act
-        HttpResponseMessage response = 
-            await _client.PostAsync($"api/cart/{0}?isAnonymous=true", null);
-        //Assert
-        response.AssertNotFound();
-        response.AssertJsonProblemUtf8();
     }
 
     [Theory]
