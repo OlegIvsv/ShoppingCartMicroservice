@@ -26,6 +26,7 @@ public class CartController : ControllerBase
     [ProducesResponseType(typeof(CartResponse), 201)]
     [ProducesResponseType(409)]
     [ProducesResponseType(400)]
+    [AllowAnonymous]
     public async Task<IActionResult> CreateShoppingCart(
         Guid customerId,
         [FromQuery] bool isAnonymous = true)
