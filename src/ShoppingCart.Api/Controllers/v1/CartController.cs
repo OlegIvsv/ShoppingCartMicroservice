@@ -92,9 +92,6 @@ public class CartController : ControllerBase
         Guid customerId, 
         [FromBody] CartItem item)
     {
-        if (!ModelState.IsValid)
-            return ValidationProblem(ModelState);
-
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
             return NotFound();
@@ -113,9 +110,6 @@ public class CartController : ControllerBase
         Guid customerId, 
         [FromBody] CartItem item)
     {
-        if (!ModelState.IsValid)
-            return ValidationProblem(ModelState);
-
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
             return NotFound();
