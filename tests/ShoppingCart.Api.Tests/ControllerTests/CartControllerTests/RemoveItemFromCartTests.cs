@@ -1,11 +1,10 @@
-using System.Net.Http.Json;
-using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.Common;
 using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
+namespace ShoppingCart.Api.Tests.ControllerTests.CartControllerTests;
 
-public class RemoveItemFromCartTests : CartsControllerIntegrationTestsBase
+public class RemoveItemFromCartTests : IntegrationTestBase
 {
     [Theory]
     [InlineData("dfba8243-47b2-4ea8-88ac-1ab436bb0a48")] // Id from test data
