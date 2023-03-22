@@ -1,11 +1,11 @@
 using System.Net.Http.Json;
-using ShoppingCart.Api.Contracts;
+using ShoppingCart.Api.Tests.Common;
 using ShoppingCart.Api.Tests.ControllersTests.Extensions;
 using Xunit;
 
-namespace ShoppingCart.Api.Tests.ControllersTests.CartControllerTests;
+namespace ShoppingCart.Api.Tests.ControllerTests.CartControllerTests;
 
-public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
+public class UpdateItemInCartTests : IntegrationTestBase
 {
     [Theory]
     [InlineData("dfba8243-47b2-4ea8-88ac-1ab436bb0a48")] // Id from test data
@@ -41,5 +41,21 @@ public class UpdateItemInCartTests : CartsControllerIntegrationTestsBase
         //Assert
         response.AssertBadRequest();
         response.AssertJsonProblemUtf8();
+    }
+
+    [Fact]
+    public async Task UpdateItemInCart_CartDoesNotExists_ReturnsNotFound()
+    {
+        //Arrange
+        await PrepareDatabase();
+        var cartId = Guid.NewGuid();
+        var bodyObjectWithWrongDiscount =
+            GetTestItemBody(Guid.NewGuid(), 7.00m, "Test Product #7", 7, 0.01);
+        //Act
+        HttpResponseMessage response = await _client.PutAsync(
+            $"api/cart/update-item/{cartId}",
+            JsonContent.Create(bodyObjectWithWrongDiscount));
+        //Assert
+        response.AssertNotFound();
     }
 }
