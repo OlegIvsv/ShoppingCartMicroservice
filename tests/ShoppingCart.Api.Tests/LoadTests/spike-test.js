@@ -6,7 +6,9 @@
  /   an item to cart. In other case user gets his cart. Next, we suppose the cart must 
  /   be cleared. Rate increases to 800 requests per second in 30s. Requests made during
  /   the spikes are tracked with separate trends to catch the difference.
- / !!! If you change the test, don't forget to update this description too !!!
+ / Params:
+ /  HOST - the tested api;
+ /  DB_MANAGER_HOST - db manager host api for filling test db;
  */
 import http from 'k6/http';
 import {sleep, check} from 'k6';

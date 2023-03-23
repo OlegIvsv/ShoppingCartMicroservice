@@ -1,12 +1,14 @@
 ﻿/**
-/ Discovering the system during a long period of time.
-/ Plan:
-/   From the very beginning the DB is filled with 5000 carts. If VU does not hava a 
-/   cart, he creates it. Else if VU has a cart, then he puts an item to cart every 5 
-/   seconds. In other case user gets his cart and we suppose cart must be cleared.
-/   The test takes 4 hours and keeps the system under under low load  
-/ !!! If you change the test, don't forget to update this description too !!!
-*/
+ / Discovering the system during a long period of time.
+ / Plan:
+ /   From the very beginning the DB is filled with 5000 carts. If VU does not hava a
+ /   cart, he creates it. Else if VU has a cart, then he puts an item to cart every 5
+ /   seconds. In other case user gets his cart and we suppose cart must be cleared.
+ /   The test takes 4 hours and keeps the system under under low load
+ / Params:
+ /  HOST - the tested api;
+ /  DB_MANAGER_HOST - db manager host api for filling test db;
+ */
 import http from 'k6/http';
 import {sleep} from 'k6';
 import {Trend} from 'k6/metrics';

@@ -1,13 +1,15 @@
 ﻿/**
-/ Testing the system under typical load. During a long period of time API receives 
-/   requests mostly on putting items in cart.
-/ Plan:
-/   From the very beginning the DB is filled with 5000 carts (have a look at SETUP). 
-/   If VU does not hava a cart, he creates it. Else if VU has a cart, then he puts 
-/   an item to cart every 5 seconds. In other case user gets his cart. Next, we suppose 
-/   the cart is to be cleared because an order was made or user changes his mind.
-/ !!! If you change the test, don't forget to update this description too !!!
-*/
+ / Testing the system under typical load. During a long period of time API receives
+ /   requests mostly on putting items in cart.
+ / Plan:
+ /  From the very beginning the DB is filled with 5000 carts (have a look at SETUP).
+ /  If VU does not hava a cart, he creates it. Else if VU has a cart, then he puts
+ /  an item to cart every 5 seconds. In other case user gets his cart. Next, we suppose
+ /  the cart is to be cleared because an order was made or user changes his mind.
+ / Params:
+ /  HOST - the tested api;
+ /  DB_MANAGER_HOST - db manager host api for filling test db;
+ */
 import http from 'k6/http';
 import {sleep} from 'k6';
 import {Trend} from 'k6/metrics';

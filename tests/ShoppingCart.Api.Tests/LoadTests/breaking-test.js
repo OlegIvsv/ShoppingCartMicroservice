@@ -5,8 +5,10 @@
  /   From the very beginning the DB is filled with 5000 carts (have a look at SETUP).
  /   If VU does not hava a cart, he creates it. Else if VU has a cart, then he puts
  /   an item to cart. In other case user gets his cart. Next, we suppose
- /   the cart must be cleared. Amount of requests increases from 1 to 1400 per second. 
- / !!! If you change the test, don't forget to update this description too !!!
+ /   the cart must be cleared. Amount of requests increases from 1 to 1400 per second.
+ / Params:
+ /  HOST - the tested api;
+ /  DB_MANAGER_HOST - db manager host api for filling test db;
  */
 import http from 'k6/http';
 import {sleep} from 'k6';
