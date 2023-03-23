@@ -8,10 +8,11 @@
 / !!! If you change the test, don't forget to update this description too !!!
 */
 import http from 'k6/http';
-import {sleep, check} from 'k6';
+import {sleep} from 'k6';
 import {Trend} from 'k6/metrics';
 import {createTestItem, createUserInfo} from './common/data-generating.js';
 import {clearCart, createCart, getCart, putItem} from "./common/http-requests.js";
+import {readCommandLineParam} from "./common/command-line";
 
 const customTrends = {
     createCartTrend: new Trend('x_create_cart_req_duration', true),
@@ -28,14 +29,14 @@ export const options = {
 };
 export const setup = () => {
     const numberOfCartsInDb = 5000;
-    const dbManagerHost = 'http://localhost:5000';
+    const dbManagerHost =  readCommandLineParam("DB_MANAGER_HOST");
     http.get(`${dbManagerHost}/refill-db?number=${numberOfCartsInDb}`);
 };
 const vuInfo = createUserInfo();
 
 export default function() {
     
-    const host = 'https://localhost:7015';
+    const host =  readCommandLineParam("HOST");
 
     if (!vuInfo.hasCart) {
         /* Create cart and check status code */

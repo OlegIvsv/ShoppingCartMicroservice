@@ -14,6 +14,7 @@ import {Trend} from 'k6/metrics';
 import {getCurrentStageIndex} from 'https://jslib.k6.io/k6-utils/1.3.0/index.js';
 import {clearCart, createCart, getCart, putItem} from './common/http-requests.js';
 import {createTestItem, createUserInfo} from './common/data-generating.js';
+import {readCommandLineParam} from "./common/command-line.js";
 
 const customTrends = {
     /* During spikes */
@@ -50,14 +51,14 @@ export const options = {
 };
 export const setup = () => {
     const numberOfCartsInDb = 5000;
-    const dbManagerHost = 'http://localhost:5000';
+    const dbManagerHost =  readCommandLineParam("DB_MANAGER_HOST");
     http.get(`${dbManagerHost}/refill-db?number=${numberOfCartsInDb}`);
 };
 const vuInfo = createUserInfo();
 
 export default function() {
     
-    const host = 'https://localhost:7015';
+    const host =  readCommandLineParam("HOST");
     const isSpike = [3, 7].indexOf(getCurrentStageIndex()) >= 0;
     
     if (!vuInfo.hasCart) {
