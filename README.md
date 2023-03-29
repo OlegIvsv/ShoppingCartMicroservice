@@ -2,12 +2,13 @@
 
 ## Table of Contents
 
-- [❔ Main responsibilities](#main-responsibilities)
-- [🧩 Approximate data format can be described as following](#approximate-data-format-can-be-described-as-following-)
+- [❔ Main responsibilities](#main-responsibilities-)
+- [🧩 Approximate data format can be described as following](#data-format-)
 - [🛠 Technologies](#technologies-and-tools)
 - [🚀 Running the microservice](#running-the-microservice)
   - [🐳 Running a docker container](#running-the-microservice)
   - [💻 Running locally](#running-locally)
+- [🚀 Running integration test with k6, Grafana, InfluxDB](#running-integration-tests-with-k6-k6-grafana-influxdb)
 - [🪟 API _**v1.0**_](#api--v10)
   - [🔑 Get shopping cart by customer id](#-get-shopping-cart-by-customer-id)
   - [🔑 Create a new shopping cart](#-create-a-new-shopping-cart)
@@ -69,7 +70,7 @@ such as development, testing, and production.
 - [**Mongo2Go**](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk) —
   a library for .NET developers that provides an in-memory MongoDB database instance for use 
   in testing and development environments.
-- [**k6**](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk) —
+- [**k6 (k6 + Grafana + InfluxDB)**](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk) —
   an open-source load testing tool for web applications that enables developers to test the performance and scalability
   of their applications. 
 
@@ -125,6 +126,53 @@ docker compose -f ./docker-compose.yml up
 ```
 4. Replace values with your configuration.
 5. Build and run.
+
+## Running integration tests with k6 (k6, Grafana, InfluxDB)
+{#running-integration-tests}
+We will run integration tests with k6. To visualize test results we are going to use 
+Grafana.
+
+ 1. You need to run the API itself :
+```commandline
+docker compose up -d
+```
+
+ 2. After this you have to run all the necessary containers with compose:
+```commandline
+ cd ../tests/ShoppingCart.Api.Tests/k6-loadtests
+ docker compose up -d
+```
+
+3. Run db-manager API. It's an API built with Flusk which allows you to easily refill 
+your database with randomized shopping carts. Integration tests will use it to set up
+before each test. So, the next step is:
+```commandline
+cd ../db-manager-server
+py main.py --connection <connection_string> --collection <collection_name> --db <database_name>
+```
+
+4. Run k6 scripts:
+```commandline
+docker-compose run --rm k6 run /load-tests/breaking-test.js ` 
+-e DB_MANAGER_HOST="http://host.docker.internal:5000" `
+-e HOST="http://host.docker.internal:80"
+```
+P.S. Here you can see two custom k6 environment variables:
+- ***DB_MANAGER_HOST*** - url of db-manager-hose
+- ***HOST*** - url of the tested API
+
+Don't use ```--rm``` if, for some reason, you don't want a container to be automatically deleted when a test has finished.
+ 
+5. In your browser, you can see visualized results of your integration tests. **You can readily change panels, modify queries, and so on just in seconds, just like I do in the pictures down below.**
+
+### Using my panels:
+![зображення](https://user-images.githubusercontent.com/86121654/228509025-c4cb68e2-6fce-4169-9970-78dd06e497fd.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228509097-8235b639-25e1-44f0-8703-efe0d8a6db0d.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228509172-0871be84-68ac-4aae-85ee-6348ed660edf.png)
+### Chart customization and adding your own beautiful panels:
+![зображення](https://user-images.githubusercontent.com/86121654/228524566-b62d09ae-e4ad-46fd-a4af-0685c79e355a.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228524440-c39228cf-0787-4cc3-a8d6-97e84f549217.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228509241-bc02cb20-c023-4164-8446-bf6d3b1492fe.png)
 
 
 ## Data Format 🧩
