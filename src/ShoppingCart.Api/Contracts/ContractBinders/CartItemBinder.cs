@@ -82,5 +82,4 @@ public class CartItemBinder : IModelBinder
         int ItemQuantity,
         double Discount,
         string ImageUrl);
-
 }

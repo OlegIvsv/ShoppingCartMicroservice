@@ -7,7 +7,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using ShoppingCart.Api.Contracts.ContractBinders;
+using ShoppingCart.Api.Contracts.RouteConstraints;
+using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
 
 namespace ShoppingCart.Api;
 
@@ -35,6 +38,10 @@ public static class DependencyInjection
             options.RequestBodyLogLimit = 1024 * 8;
             options.ResponseBodyLogLimit = 1024 * 8;
         });
+        services.AddRouting(options =>
+        {
+            options.ConstraintMap.Add("guidID", typeof(GuidIdConstraint));
+        });
         services.AddControllers(options =>
         {
             options.ModelBinderProviders.Insert(0, new CartItemBinderProvider());
@@ -51,7 +58,11 @@ public static class DependencyInjection
             setup.GroupNameFormat = "'v'VVV";
         });
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(c =>
+        {
+            c.ExampleFilters();
+        });
+        services.AddSwaggerExamplesFromAssemblyOf<Program>();
         services.ConfigureOptions<ConfigureSwaggerOptions>();
         
         return services;

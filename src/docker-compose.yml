@@ -1,34 +1,33 @@
-version: "3"
+version: "3.9"
 name: shopping-cart-ms
+
 services:
   app:
     container_name: shopping-cart-api
-    image: shopping-cart-api    # docker build -t shopping-cart-api .
-    ports:                      
-      - 80:80                   
-      - 443:443                 
-    
+    build: .
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - MongoDb__ConnectionString=${MONGODB_CONNECTION}
+      - MongoDb__Database=${MONGODB_DB_NAME}
+      - MongoDb__ShoppingCartsCollection=${MONGODB_COLLECTION_NAME}
+      - Jobs__CartCleanUpJob__AbandonmentPeriod=${ABANDONMENT_PERIOD}
+      - Jobs__CartCleanUpJob__CleanUpFrequency=${CLEANUP_FREQUENCY}
+      - Jobs__CartCleanUpJob__Enabled=${CLEANUP_ENABLED}
+      - Auth__Issuer=${AUTH_ISSUER}
+      - Auth__Audience=${AUTH_AUDIENCE}
+      - Auth_Key=${AUTH_KEY}
   mongodb:
     container_name: mongodb
     image: mongo
     ports:
       - 27017:27017
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=adminn
-      - MONGO_INITDB_ROOT_PASSWORD=passwordd
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INIT_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INIT_PASS}
     volumes:
       - mongodb-data:/data/db
-    
-  mongo-express: 
-    container_name: mongo-express
-    image: mongo-express
-    ports:
-        - 8080:8081
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=adminn
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=passwordd
-      - ME_CONFIG_MONGODB_SERVER=mongodb 
-    restart: unless-stopped
 
 volumes:
   mongodb-data:

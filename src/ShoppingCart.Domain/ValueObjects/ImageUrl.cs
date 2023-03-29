@@ -15,12 +15,12 @@ public sealed class ImageUrl : ValueObject<ImageUrl>
 
     public static Result<ImageUrl> Create(string url)
     {
-        bool isValidFormat = Uri.TryCreate(url, UriKind.Absolute, out Uri? uriInfo);
-        bool isValidSchema = uriInfo.Scheme == Uri.UriSchemeHttp
-                             || uriInfo.Scheme == Uri.UriSchemeHttps;
-        if(isValidFormat && isValidSchema)
+        bool isValidUrl = 
+            Uri.TryCreate(url, UriKind.Absolute, out Uri? uriInfo) 
+            && (uriInfo?.Scheme == Uri.UriSchemeHttp || uriInfo?.Scheme == Uri.UriSchemeHttps);
+        if (isValidUrl)
             return new ImageUrl(url);
-        
+
         return Result.Fail(new InvalidImageUrlError(url));
     }
 

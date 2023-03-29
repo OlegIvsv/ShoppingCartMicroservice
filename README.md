@@ -1,6 +1,24 @@
 # Shoping cart microservice 🛒🛒🛒
 
-## Main responsibilities ❔
+## Table of Contents
+
+- [❔ Main responsibilities](#main-responsibilities-)
+- [🧩 Approximate data format can be described as following](#data-format-)
+- [🛠 Technologies](#technologies-and-tools)
+- [🚀 Running the microservice](#running-the-microservice)
+  - [🐳 Running a docker container](#running-the-microservice)
+  - [💻 Running locally](#running-locally)
+- [🚀 Running integration test with k6, Grafana, InfluxDB](#running-integration-tests-with-k6-k6-grafana-influxdb)
+- [🪟 API _**v1.0**_](#api--v10)
+  - [🔑 Get shopping cart by customer id](#-get-shopping-cart-by-customer-id)
+  - [🔑 Create a new shopping cart](#-create-a-new-shopping-cart)
+  - [🔑 Delete an existing shopping cart](#-delete-an-existing-shopping-cart)
+  - [🔑 Clear shopping cart](#-clear-shopping-cart)
+  - [🔑 Put item to shopping cart](#-put-item-to-shopping-cart)
+  - [🔑 Update item in shopping cart](#-update-item-in-shopping-cart)
+  - [🔑 Remove item from shopping cart](#-remove-item-from-shopping-cart)
+
+## Main Responsibilities ❔
 
  1. Storing shopping carts and items they contain.
  
@@ -8,11 +26,162 @@
 
  3. The main goal we are trying to achieve is to avoid losing the user's shopping cart by storing it on the server side instead of using local storage or, what is even worth, session storage. So, if the user login with another device or browser, his shopping cart will still be filled with selected items.
 
-## Approximate data format can be described as following 🧩
+## Technologies and Tools
+
+### .NET 6 and ASP.NET 6
+I chose to use [.NET 6]() for this project because it is a long-term support (LTS) release with several new features and
+improvements over previous versions. It also has a robust ecosystem with strong community support and tooling. While
+.NET 7 was also available at the time, I decided to use .NET 6 because it was the most stable and widely adopted version
+at the time.
+
+### Docker
+A tool that allows you to create, deploy, and run applications in containers. By using 
+[Docker](), it becomes easier to manage and distribute applications across different environments, 
+such as development, testing, and production.
+
+### Logging
+- [**Serilog**](https://www.nuget.org/packages/Serilog.AspNetCore)  —
+  A logging library for .NET that provides a simple and highly configurable approach to logging, allowing developers to
+  easily capture structured log data.
+
+### API Documentation
+- [**Swagger**](https://swagger.io/) — 
+  An open-source toolset for building, documenting, and testing RESTful APIs that provides a user interface
+  for developers to interact with and understand the API's capabilities.
+
+### Database
+- [**MongoDB**](https://www.mongodb.com/) —
+  a cross-platform document-oriented NoSQL database that uses a flexible data model to store data, making it easier to
+  build and scale applications.
+- [**MongoDB.Driver**](https://www.nuget.org/packages/MongoDB.Driver) — 
+  A package for interacting with MongoDB databases using C# code.
+
+### Job Scheduling
+- [**Quartz.NET**](https://www.nuget.org/packages/Quartz) — 
+  Quartz.NET is a full-featured, open-source job scheduling library that can be integrated within 
+  .NET applications, allowing developers to schedule and execute tasks based on a predefined set of criteria.
+
+### Testing
+- [**xUnit**](https://www.nuget.org/packages/Microsoft.AspNetCore.Mvc.Testing) — 
+  A package for testing ASP.NET Core APIs.
+- [**Moq**](https://github.com/moq/moq) —
+  a popular mocking library for .NET developers that allows you to easily create mock 
+  objects for testing.
+- [**Mongo2Go**](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk) —
+  a library for .NET developers that provides an in-memory MongoDB database instance for use 
+  in testing and development environments.
+- [**k6 (k6 + Grafana + InfluxDB)**](https://www.nuget.org/packages/Microsoft.NET.Test.Sdk) —
+  an open-source load testing tool for web applications that enables developers to test the performance and scalability
+  of their applications. 
+
+
+## Running the Microservice
+
+### Running a Docker Container
+
+1. Create `.env` file with this configuration to `/src`:
+
+```dockerfile
+#Mongo DB Initializatoin
+MONGO_INIT_USER=user
+MONGO_INIT_PASS=pass
+# Mongo DB connection
+MONGODB_CONNECTION=mongodb://user:pass@mongodb:port/
+MONGODB_DB_NAME=db_name
+MONGODB_COLLECTION_NAME=collection_name
+# DB Cleaning options 
+ABANDONMENT_PERIOD=00:05:00
+CLEANUP_FREQUENCY=00:05:00
+LEANUP_ENABLED=false
+# Authentication & Authorization
+JWT_KEY=qwertyuiopasdfghjklzxcvbnm1234567890
+JWT_AUDIENCE=YourAudience
+JWT_ISSUER=YourIssuer
+```
+2. Replace values with your configuration.
+3. Run docker-compose: 
+
+```commandline
+docker compose -f ./docker-compose.yml up 
+```
+
+### Running Locally
+
+1. Run a **_mongodb_** instanse.
+2. Go to `launchSetting.json`
+3. In chosen the profile repalce the `environmentVariables` section:
+```json
+   "environmentVariables": {
+     "ASPNETCORE_ENVIRONMENT": "Production",
+     "MongoDb__ConnectionString": "mongodb://adminn:passwordd@localhost:27017/",
+     "MongoDb__Database": "shop_db",
+     "MongoDb__ShoppingCartsCollection": "shopping_carts",
+     "Jobs__CartCleanUpJob__AbandonmentPeriod": "01:00:00",
+     "Jobs__CartCleanUpJob__CleanUpFrequency": "01:00:00",
+     "Jobs__CartCleanUpJob__Enabled": "false",
+     "Auth__Issuer": "Issuer",
+     "Auth__Audience": "Audience",
+     "Auth__Key": "Key"
+   }
+```
+4. Replace values with your configuration.
+5. Build and run.
+
+## Running integration tests with k6 (k6, Grafana, InfluxDB)
+{#running-integration-tests}
+We will run integration tests with k6. To visualize test results we are going to use 
+Grafana.
+
+ 1. You need to run the API itself :
+```commandline
+docker compose up -d
+```
+
+ 2. After this you have to run all the necessary containers with compose:
+```commandline
+ cd ../tests/ShoppingCart.Api.Tests/k6-loadtests
+ docker compose up -d
+```
+
+3. Run db-manager API. It's an API built with Flusk which allows you to easily refill 
+your database with randomized shopping carts. Integration tests will use it to set up
+before each test. So, the next step is:
+```commandline
+cd ../db-manager-server
+py main.py --connection <connection_string> --collection <collection_name> --db <database_name>
+```
+
+4. Run k6 scripts:
+```commandline
+docker-compose run --rm k6 run /load-tests/breaking-test.js ` 
+-e DB_MANAGER_HOST="http://host.docker.internal:5000" `
+-e HOST="http://host.docker.internal:80"
+```
+P.S. Here you can see two custom k6 environment variables:
+- ***DB_MANAGER_HOST*** - url of db-manager-hose
+- ***HOST*** - url of the tested API
+
+Don't use ```--rm``` if, for some reason, you don't want a container to be automatically deleted when a test has finished.
+ 
+5. In your browser, you can see visualized results of your integration tests. **You can readily change panels, modify queries, and so on just in seconds, just like I do in the pictures down below.**
+
+### Using my panels:
+![зображення](https://user-images.githubusercontent.com/86121654/228509025-c4cb68e2-6fce-4169-9970-78dd06e497fd.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228509097-8235b639-25e1-44f0-8703-efe0d8a6db0d.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228509172-0871be84-68ac-4aae-85ee-6348ed660edf.png)
+### Chart customization and adding your own beautiful panels:
+![зображення](https://user-images.githubusercontent.com/86121654/228524566-b62d09ae-e4ad-46fd-a4af-0685c79e355a.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228524440-c39228cf-0787-4cc3-a8d6-97e84f549217.png)
+![зображення](https://user-images.githubusercontent.com/86121654/228509241-bc02cb20-c023-4164-8446-bf6d3b1492fe.png)
+
+
+## Data Format 🧩
 
 ```json
 {
     "id": "f434c23b-cdc0-436f-832a-08541b3c3ae1",
+    "lastModificatedDate": "2023-01-01T100:00:00.000+00:00",
+    "isAnonymous": true,
     "items": [
         {
             "id": "a90da8ee-af2a-4d8e-863c-d384c82650ea",
@@ -50,11 +219,12 @@
 
  ```json
 {
-    "id": "00000000-0000-0000-0000-000000000000",
     "customerId": "00000000-0000-0000-0000-000000000000",
+    "lastModificatedDate": "2023-01-01T100:00:00.000+00:00",
+    "isAnonymous": true,
     "items": [
         {
-             "id": "00000000-0000-0000-0000-000000000000",
+            "id": "00000000-0000-0000-0000-000000000000",
             "productId": "00000000-0000-0000-0000-000000000000",
             "itemQuantity": 1,
             "productTitle": "text",
@@ -72,13 +242,14 @@
  #### 🔑 Create a new shopping cart
  
  ```js
-POST api/cart/{customerId}
+POST api/cart/{customerId}?{isAnonymous}
 ```
  Creates empty shopping carts for new users.
 
  ***Input:***
 
 - **customerId**
+- **isAnonymous** - specifies if the cart is anonymous with a bool value
 
  ***Output:***
 

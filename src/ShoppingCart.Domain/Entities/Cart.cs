@@ -8,26 +8,39 @@ public sealed class Cart : AggregateRoot<Cart>
 {
     private readonly Dictionary<Guid, CartItem> _items;
     public IReadOnlyCollection<CartItem> Items => _items.Values;
+    public bool IsAnonymous { get; private set; }
+    public DateTime LastModifiedDate { get; private set; }
 
-    private Cart(Guid customerId, IEnumerable<CartItem>? items)
+    private Cart(
+        Guid customerId, 
+        bool isAnonymous, 
+        IEnumerable<CartItem> items)
     {
         Id = customerId;
+        IsAnonymous = isAnonymous;
+        LastModifiedDate = DateTime.Now;
         _items = new Dictionary<Guid, CartItem>();
         Fill(items);
     }
 
-    public static Result<Cart> TryCreate(Guid customerId, IEnumerable<CartItem>? items = null)
+    public static Result<Cart> TryCreate(
+        Guid customerId,
+        bool isAnonymous = true,
+        IEnumerable<CartItem>? items = null)
     {
         if (customerId == Guid.Empty)
             return Result.Fail(new InvalidIdValueError(customerId));
-        return new Cart(customerId, items);
+        return new Cart(customerId, isAnonymous, items);
     }
 
-    public static Cart Create(Guid customerId, IEnumerable<CartItem>? items = null)
+    public static Cart Create( 
+        Guid customerId,
+        bool isAnonymous = true,
+        IEnumerable<CartItem>? items = null)
     {
         if (customerId == Guid.Empty)
             throw new ArgumentException("Invalid id value!", nameof(customerId));
-        return new Cart(customerId, items);
+        return new Cart(customerId, isAnonymous, items);
     }
 
     private void Fill(IEnumerable<CartItem>? items)
@@ -65,7 +78,9 @@ public sealed class Cart : AggregateRoot<Cart>
         => _items.Remove(productId);
 
     public void Clear()
-        => _items.Clear();
+    {
+        _items.Clear();
+    }
 
     public bool IsEmpty()
         => _items.Count == 0;

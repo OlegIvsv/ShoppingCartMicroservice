@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShoppingCart.Api.Contracts;
 using ShoppingCart.Api.Contracts.ContractAttributes;
+using ShoppingCart.Api.Contracts.Swagger;
 using ShoppingCart.Domain.Entities;
 using ShoppingCart.Interfaces.Interfaces;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace ShoppingCart.Api.Controllers.v1;
 
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/[controller]")]
+[Authorize(Policy = "owner-only")]
 public class CartController : ControllerBase
 {
     private readonly IShoppingCartRepository _repository;
@@ -18,30 +22,33 @@ public class CartController : ControllerBase
         _repository = cartRepository;
     }
 
-    [HttpPost("{customerId}")]
+    [HttpPost("{customerId:guidID}")]
     [ProducesResponseType(typeof(CartResponse), 201)]
     [ProducesResponseType(409)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> CreateShoppingCart([GuidId] Guid customerId)
+    [AllowAnonymous]
+    public async Task<IActionResult> CreateShoppingCart(
+        Guid customerId,
+        [FromQuery] bool isAnonymous = true)
     {
         var cartInRepo = await _repository.FindByCustomer(customerId);
         if (cartInRepo is not null)
             return Conflict();
 
-        var cart = Cart.TryCreate(customerId);
+        var cart = Cart.TryCreate(customerId, isAnonymous);
         if (cart.IsFailed)
             return BadRequest();
 
-        await _repository.Add(cart.Value);
+        await _repository.Save(cart.Value);
         return CreatedAtAction(
             nameof(CreateShoppingCart),
             CartResponse.FromEntity(cart.Value));
     }
 
-    [HttpGet("{customerId}")]
+    [HttpGet("{customerId:guidID}")]
     [ProducesResponseType(typeof(CartResponse), 200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> GetShoppingCart([GuidId] Guid customerId)
+    public async Task<IActionResult> GetShoppingCart(Guid customerId)
     {
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
@@ -51,7 +58,7 @@ public class CartController : ControllerBase
         return Ok(responseCart);
     }
 
-    [HttpDelete("{customerId}")]
+    [HttpDelete("{customerId:guidID}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> DeleteShoppingCart([GuidId] Guid customerId)
@@ -63,65 +70,61 @@ public class CartController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("clear/{customerId}")]
+    [HttpPut("clear/{customerId:guidID}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> ClearShoppingCart([GuidId] Guid customerId)
+    public async Task<IActionResult> ClearShoppingCart(Guid customerId)
     {
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
             return NotFound();
 
         cart.Clear();
-        await _repository.Update(cart);
+        await _repository.Save(cart);
         return Ok();
     }
 
-    [HttpPut("put-item/{customerId}")]
+    [HttpPut("put-item/{customerId:guidID}")]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
+    [SwaggerRequestExample(typeof(CartItem), typeof(CartItemExampleProvider))]
     public async Task<IActionResult> PutItemToCart( 
-        [GuidId] Guid customerId, 
+        Guid customerId, 
         [FromBody] CartItem item)
     {
-        if (!ModelState.IsValid)
-            return ValidationProblem(ModelState);
-
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
             return NotFound();
 
         cart.PutItem(item);
-        await _repository.Update(cart);
+        await _repository.Save(cart);
         return Ok();
     }
 
-    [HttpPut("update-item/{customerId}")]
+    [HttpPut("update-item/{customerId:guidID}")]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
+    [SwaggerRequestExample(typeof(CartItem), typeof(CartItemExampleProvider))]
     public async Task<IActionResult> UpdateItemInCart(
-        [GuidId] Guid customerId, 
+        Guid customerId, 
         [FromBody] CartItem item)
     {
-        if (!ModelState.IsValid)
-            return ValidationProblem(ModelState);
-
         var cart = await _repository.FindByCustomer(customerId);
         if (cart is null)
             return NotFound();
 
         cart.UpdateItem(item);
-        await _repository.Update(cart);
+        await _repository.Save(cart);
         return Ok();
     }
 
-    [HttpPut("remove-item/{customerId}")]
+    [HttpPut("remove-item/{customerId:guidID}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(200)]
     public async Task<IActionResult> RemoveItemFromCart(
-        [GuidId] Guid customerId, 
+        Guid customerId, 
         [FromQuery][GuidId] Guid productId)
     {
         var cart = await _repository.FindByCustomer(customerId);
@@ -130,7 +133,7 @@ public class CartController : ControllerBase
 
         var deleted = cart.RemoveItem(productId);
         if (deleted)
-            await _repository.Update(cart);
+            await _repository.Save(cart);
         return Ok();
     }
 }
